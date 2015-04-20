@@ -1,13 +1,63 @@
 <!--
-    @license
-    Copyright (c) 2015 Juan Francisco Salamanca Carmona
-    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-    Code distributed by Google as part of the polymer project is also
-    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-  -->
+@license
+Copyright (c) 2015 Juan Francisco Salamanca Carmona
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 
-  <link rel="import" href="bower_components/polymer/polymer.html">
-  <link rel="import" href="bower_components/paper-button/paper-button.html">
-  <link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="instagram-timeline" attributes="accessToken">
+  <template>
+    <link rel="stylesheet" href="instagram-timeline.css">
+    <core-ajax 
+               id="request"
+               url="http://instagram-timeline.appspot.com/request/instagram"
+               method="GET"
+               params='{
+                       "access_token": "{{accessToken}}"
+                       }' 
+               handleAs='json'
+               on-core-response="{{response}}"
+               >
+    </core-ajax>
+    <!--Cabecera--> 
+    <paper-shadow>
+      <div id ="cabecera" horizontal center-justified layout>
+        <p flex style="text-align:center">Tu Feed de Instagram</p>
+      </div>
+    </paper-shadow>
+
+    <!-- Cuerpo -->
+    <div style="overflow-y: auto;max-height: 400px; background: #E0E1E2">
+      <template id="contenido" is="auto-binding" repeat="{{evento in events}}">
+        <ul class="box" >
+          <paper-shadow>
+            <span class="username">{{evento.user.username}}</span>
+            <img src="{{evento.images.standard_resolution.url}}" class="imagen"></img>
+          </paper-shadow>
+        </ul>
+      </template>
+    </div>
+
+
+  </template>
+<script>
+  Polymer({
+    ready: function(event, detail, sender){
+      this.$.request.go()
+    },
+    response: function(event, detail, sender) {
+      var t = this.$.contenido;
+      t.events =  sender.response.data
+    }
+  });
+
+</script>
+
+</polymer-element>
