@@ -11,6 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/core-icons/core-icons.html">
 
 <polymer-element name="instagram-timeline" attributes="accessToken">
   <template>
@@ -34,30 +36,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </paper-shadow>
 
     <!-- Cuerpo -->
-    <div style="overflow-y: auto;max-height: 400px; background: #E0E1E2">
+    <div id="contorno">
       <template id="contenido" is="auto-binding" repeat="{{evento in events}}">
-        <ul class="box" >
-          <paper-shadow>
-            <span class="username">{{evento.user.username}}</span>
-            <img src="{{evento.images.standard_resolution.url}}" class="imagen"></img>
-          </paper-shadow>
+        <ul id="box">
+          <img id="profile_picture" src="{{evento.user.profile_picture}}">
+          <a id="profile_name"
+             href="https://instagram.com/{{evento.user.username}}/" target='_blank'>
+            <p>{{evento.user.username}}</p>
+          </a>
+          <br>
+          <img id="imagen" src="{{evento.images.standard_resolution.url}}">
+          <core-icon icon="favorite" style="color:red"></core-icon>
         </ul>
       </template>
     </div>
+    <div id="fin"></div>
+
 
 
   </template>
-<script>
-  Polymer({
-    ready: function(event, detail, sender){
-      this.$.request.go()
-    },
-    response: function(event, detail, sender) {
-      var t = this.$.contenido;
-      t.events =  sender.response.data
-    }
-  });
+  <script>
+    Polymer({
+      ready: function(event, detail, sender){
+        this.$.request.go()
+      },
+      response: function(event, detail, sender) {
+        console.log(sender.response)
+        var t = this.$.contenido;
+        t.events =  sender.response.data
+      }
+    });
 
-</script>
+  </script>
 
 </polymer-element>

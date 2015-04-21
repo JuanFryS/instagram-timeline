@@ -3,28 +3,71 @@
 }
 
 #cabecera {
-  background: #416F96; /* Old browsers */
-
-  color: #daefff;
+  background: -webkit-linear-gradient(top,#517fa4,#306088);
+  color: #fff;
   font-family: 'Helvetica',sans-serif;
   font-weight: 800;
   font-size: 16px;
   text-align: center;
 }
 
-.box {
+#contorno{
+  overflow-y: auto;
+  max-height: 400px;
+  background: #E0E1E2;
+}
+
+#box {
+  margin-top: 6px;
+  margin-bottom: 10px;
   text-align: center;
   padding-left: 0px;
   max-width: 400px;
   min-width: 350px;
   font-size: 14px;
   background: #E0E1E2; /* Old browsers */
-
+  border-bottom: 1px solid rgba(63, 114, 155, 0.5);
 }
 
-.imagen{
+#profile_picture{
+  margin-left: 5px;
+  border-radius: 30px;
+  float: left;
+  vertical-align:middle;
+  width: 40px;
+  height: 40px;
+}
+
+#profile_name{
+  text-decoration:none;
+  vertical-align: middle;
+  float: left;
+  margin-left: 5px;
+}
+
+#imagen{
   height: auto;
   max-width: 95%;
+}
+
+#fin {
+  background: #3f729b;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  height: 2px;
+}
+
+a:link{
+  color: #3f729b;
+}
+
+a:visited{
+  color: #3f729b;
+}
+
+a:hover {
+  color: #3f729b;
+  font-weight: bold;
 }
 
 ::-webkit-scrollbar {
@@ -33,6 +76,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #416F96;
-  -webkit-border-radius: 1ex;
+  background: #517fa4;
 }
