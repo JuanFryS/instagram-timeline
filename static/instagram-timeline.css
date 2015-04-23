@@ -5,7 +5,7 @@
 #cabecera {
   background: -webkit-linear-gradient(top,#517fa4,#306088);
   color: #fff;
-  font-family: 'Helvetica',sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 16px;
   text-align: center;
@@ -18,18 +18,22 @@
 }
 
 #box {
-  margin-top: 6px;
-  margin-bottom: 10px;
+  margin-top: 0px;
+  margin-bottom: 30px;
   text-align: center;
   padding-left: 0px;
   max-width: 400px;
   min-width: 350px;
   font-size: 14px;
-  background: #E0E1E2; /* Old browsers */
+  background: white;
   border-bottom: 1px solid rgba(63, 114, 155, 0.5);
+  border-radius: 5px;
+
 }
 
 #profile_picture{
+  margin-top: 10px;
+  margin-bottom: 5px;
   margin-left: 5px;
   border-radius: 30px;
   float: left;
@@ -40,6 +44,8 @@
 
 #profile_name{
   text-decoration:none;
+  margin-top: 10px;
+  margin-bottom: 5px;
   vertical-align: middle;
   float: left;
   margin-left: 5px;
@@ -48,6 +54,27 @@
 #imagen{
   height: auto;
   max-width: 95%;
+  border-radius: 2px;
+}
+
+#liked{
+  margin-left: 15px;
+  margin-bottom: 5px;
+  margin-top: 3px;
+  stroke: rgba(0,0,0,0.4);
+  stroke-width: 2px;
+}
+
+#liked_count{
+  color: #3f729b;
+  padding-top: 7px;
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left: 1px solid #3f729b;
+  border-radius: 1px;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
 }
 
 #fin {
@@ -57,17 +84,15 @@
   height: 2px;
 }
 
-a:link{
+a{
+  font-size: 12px;
   color: #3f729b;
-}
-
-a:visited{
-  color: #3f729b;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
 }
 
 a:hover {
-  color: #3f729b;
-  font-weight: bold;
+  font-weight: 100;
 }
 
 ::-webkit-scrollbar {

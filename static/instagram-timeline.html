@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 <link rel="import" href="bower_components/core-icons/core-icons.html">
+<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 <polymer-element name="instagram-timeline" attributes="accessToken">
   <template>
@@ -38,16 +39,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- Cuerpo -->
     <div id="contorno">
       <template id="contenido" is="auto-binding" repeat="{{evento in events}}">
-        <ul id="box">
-          <img id="profile_picture" src="{{evento.user.profile_picture}}">
-          <a id="profile_name"
-             href="https://instagram.com/{{evento.user.username}}/" target='_blank'>
-            <p>{{evento.user.username}}</p>
-          </a>
-          <br>
-          <img id="imagen" src="{{evento.images.standard_resolution.url}}">
-          <core-icon icon="favorite" style="color:red"></core-icon>
-        </ul>
+        <paper-shadow z=1 style="margin: 2%;border-radius: 5px">
+          <ul id="box">
+            <img id="profile_picture" src="{{evento.user.profile_picture}}">
+            <a id="profile_name"
+               href="https://instagram.com/{{evento.user.username}}/" target='_blank'>
+              <p>{{evento.user.username}}</p>
+            </a>
+            <br>
+            <img id="imagen" src="{{evento.images.standard_resolution.url}}">
+            <div horizontal layout>
+              <!-- <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}" ></core-icon>-->
+              <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked}}"></core-icon>
+              <span id="liked_count">{{evento.likes.count}} likes</span>
+            </div>
+          </ul>
+        </paper-shadow>
       </template>
     </div>
     <div id="fin"></div>
