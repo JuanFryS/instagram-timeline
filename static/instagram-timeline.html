@@ -51,8 +51,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div horizontal layout>
               <!-- <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}" ></core-icon>-->
               <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked}}"></core-icon>
-              <span id="liked_count">{{evento.likes.count}} likes</span>
+              <span id="liked_count">{{evento.likes.count}} Me gusta</span>
             </div>
+            <span><a id="user_comentario" href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
+            <span id="comentario">{{evento.caption.text}}</span>
           </ul>
         </paper-shadow>
       </template>
