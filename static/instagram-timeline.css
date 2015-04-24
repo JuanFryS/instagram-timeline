@@ -50,6 +50,10 @@
   margin-left: 5px;
 }
 
+#hora{
+  text-align: right;
+}
+
 #imagen{
   margin-left: 10px;
   margin-right: 10px;
