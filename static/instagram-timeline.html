@@ -32,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!--Cabecera--> 
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
-        <p flex style="text-align:center">Tu Feed de Instagram</p>
+        <p flex style="text-align:center">Instagram</p>
       </div>
     </paper-shadow>
 
@@ -47,14 +47,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <p>{{evento.user.username}}</p>
             </a>
             <br>
-            <img id="imagen" src="{{evento.images.standard_resolution.url}}">
+            <template if="{{evento.type == 'image'}}">
+              <img id="imagen" src="{{evento.images.standard_resolution.url}}">
+            </template>
+            <template if="{{evento.type == 'video'}}">
+              <video id="video" controls muted>
+                <source src="{{evento.videos.standard_resolution.url}}">
+                Tu navegador no soporta este video
+              </video>
+            </template>
             <div horizontal layout>
               <!-- <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}" ></core-icon>-->
               <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked}}"></core-icon>
               <span id="liked_count">{{evento.likes.count}} Me gusta</span>
             </div>
-            <span><a id="user_comentario" href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
-            <span id="comentario">{{evento.caption.text}}</span>
+            <div id="descripcion">
+              <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
+              <span>{{evento.caption.text}}</span>
+            </div>
           </ul>
         </paper-shadow>
       </template>
