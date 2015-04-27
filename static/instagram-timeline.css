@@ -102,6 +102,17 @@
   margin-left: 10px;
 }
 
+#boton{
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  font-family:'Helvetica','sans-serif';
+  color: #55acee;
+  font-style: oblique;
+  transition: background .2s linear, border-radius 1s ease-in 1s;
+}
+
 #fin {
   background: #3f729b;
   border-bottom-left-radius: 5px;

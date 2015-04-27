@@ -29,6 +29,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                on-core-response="{{response}}"
                >
     </core-ajax>
+
+    <core-ajax
+               id="load_more"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "access_token": "{{accessToken}}",
+                       "max_id": "{{max_id}}",
+                       "count": "{{count}}
+                       }'
+               handleAs='json'
+               on-core-response="{{response_load}}"
+               >
+    </core-ajax>
     <!--Cabecera--> 
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
@@ -54,22 +68,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <a href="{{evento.link}}" target="_blank">
                 <video id="video" controls muted>
                   <source src="{{evento.videos.standard_resolution.url}}">
+                  El video no puede ser reproducido
                 </video>
               </a>
-              Tu navegador no soporta este video
             </template>
             <div horizontal layout>
-              <!-- <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}" ></core-icon>-->
               <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked}}"></core-icon>
               <span id="liked_count">{{evento.likes.count}} Me gusta</span>
             </div>
-            <div id="descripcion">
+            <div id="descripcion" hidden?="{{evento.caption == null}}">
               <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
               <span id="texto{{index}}" onload="{{cambiar(evento,index)}}"></span>
             </div>
           </ul>
         </paper-shadow>
       </template>
+      <ul id="boton" on-click="{{load}}">
+        <span>Mostrar más</span>
+      </ul>
     </div>
     <div id="fin"></div>
 
@@ -78,6 +94,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     Polymer({
+      /*Count hace referencia al numero de elementos nuevos a cargar al darle a mostrar mas*/
+      count:10,
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken){
@@ -89,19 +107,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.request.go()
         }
       },
-
       response: function(event, detail, sender) {
-        this.events = this.changeTime(sender.response.data)
+        this.datos = (sender.response)
+        console.log(this.datos)
+        this.events  = this.changeTime(sender.response.data)
         this.events = this.parsear(this.events)
-        console.log(sender.response)
         var t = this.$.contenido;
         t.events =  this.events
       },
 
+      load: function(){
+        console.log(this.endpoint)
+        this.endpoint = this.datos.pagination.next_url
+        console.log(this.endpoint)
+      },
+
       cambiar: function(event,index){
         if(index!=undefined){
-          this.injectBoundHTML(event.caption.text, this.$.contenido.parentNode.children[1+index].children[0].children[7].children[1])
-        }
+          if(event.caption)
+            this.injectBoundHTML(event.caption.text, this.$.contenido.parentNode.children[1+index].children[0].children[7].children[1])
+            }
       },
 
       changeTime: function(list){
@@ -142,9 +167,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       parsear: function(lista){
         for(i = 0; i < lista.length; i++){
-          lista[i].caption.text = this.parseURL(lista[i].caption.text);
-          lista[i].caption.text = this.parseUsername(lista[i].caption.text);
-          lista[i].caption.text = this.parseHashtag(lista[i].caption.text);
+          if(lista[i].caption){
+            lista[i].caption.text = this.parseURL(lista[i].caption.text);
+            lista[i].caption.text = this.parseUsername(lista[i].caption.text);
+            lista[i].caption.text = this.parseHashtag(lista[i].caption.text);
+          }
         }
         return lista;
       },
