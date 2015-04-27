@@ -15,12 +15,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/core-icons/core-icons.html">
 <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-<polymer-element name="instagram-timeline" attributes="accessToken">
+<polymer-element name="instagram-timeline" attributes=" endpoint accessToken">
   <template>
     <link rel="stylesheet" href="instagram-timeline.css">
     <core-ajax 
                id="request"
-               url="http://instagram-timeline.appspot.com/request/instagram"
+               url="{{endpoint}}"
                method="GET"
                params='{
                        "access_token": "{{accessToken}}"
@@ -45,17 +45,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <a id="profile_name"
                href="https://instagram.com/{{evento.user.username}}/" target='_blank'>
               <p>{{evento.user.username}}</p>
-              <!--<span id="hora">{{evento.tiempo}}</span>-->
             </a>
-            <br>
+            <span id="hora">{{evento.tiempo}}</span>
             <template if="{{evento.type == 'image'}}">
-              <img id="imagen" src="{{evento.images.standard_resolution.url}}">
+              <a href="{{evento.link}}" target="_blank"><img id="imagen" src="{{evento.images.standard_resolution.url}}"></a>
             </template>
             <template if="{{evento.type == 'video'}}">
-              <video id="video" controls muted>
-                <source src="{{evento.videos.standard_resolution.url}}">
-                Tu navegador no soporta este video
-              </video>
+              <a href="{{evento.link}}" target="_blank">
+                <video id="video" controls muted>
+                  <source src="{{evento.videos.standard_resolution.url}}">
+                </video>
+              </a>
+              Tu navegador no soporta este video
             </template>
             <div horizontal layout>
               <!-- <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}" ></core-icon>-->
@@ -77,9 +78,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     Polymer({
+      /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
-        this.$.request.go()
+        if(this.accessToken){
+          this.$.request.go()
+        }
       },
+      domReady: function(event, detail,sender){
+        if(this.accessToken && this.events != null){
+          this.$.request.go()
+        }
+      },
+
       response: function(event, detail, sender) {
         this.events = this.changeTime(sender.response.data)
         this.events = this.parsear(this.events)

@@ -51,7 +51,12 @@
 }
 
 #hora{
-  text-align: right;
+  float: right;
+  font-size: 13px;
+  margin-top: 22px;
+  margin-right: 10px;
+  font-family: 'Montserrat', sans-serif;
+  color: #999;
 }
 
 #imagen{
