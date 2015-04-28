@@ -11,6 +11,11 @@
   text-align: center;
 }
 
+#boton_refrescar {
+    text-align: right;
+    padding-bottom: 10px;
+}
+
 #contorno{
   overflow-y: auto;
   max-height: 400px;
@@ -94,6 +99,7 @@
   margin-right: 15px;
   margin-bottom: 15px;
   font-size: 13px;
+  max-width: 400px;
 }
 
 #video{
@@ -139,3 +145,4 @@ a:hover {
 ::-webkit-scrollbar-thumb {
   background: #517fa4;
 }
+

@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 <link rel="import" href="bower_components/core-icons/core-icons.html">
+<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
 <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 <polymer-element name="instagram-timeline" attributes=" endpoint accessToken">
@@ -23,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params='{
-                       "access_token": "{{accessToken}}"
+                       "access_token":"{{accessToken}}"
                        }' 
                handleAs='json'
                on-core-response="{{response}}"
@@ -35,18 +36,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params='{
-                       "access_token": "{{accessToken}}",
-                       "max_id": "{{max_id}}",
-                       "count": "{{count}}
+                       "peticion":"{{peticion}}",
+                       "count":"{{count}}"
                        }'
                handleAs='json'
                on-core-response="{{response_load}}"
                >
     </core-ajax>
+
+
     <!--Cabecera--> 
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
         <p flex style="text-align:center">Instagram</p>
+
       </div>
     </paper-shadow>
 
@@ -95,7 +98,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       /*Count hace referencia al numero de elementos nuevos a cargar al darle a mostrar mas*/
-      count:10,
+      count: 10,
+      peticion: "",
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken){
@@ -116,10 +120,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         t.events =  this.events
       },
 
+
       load: function(){
-        console.log(this.endpoint)
-        this.endpoint = this.datos.pagination.next_url
-        console.log(this.endpoint)
+        this.peticion = this.datos.pagination.next_url
+        this.$.load_more.go()
+      },
+
+      response_load: function(event, detail, sender){
+        this.datos = sender.response
+        var tweets = new Array();
+        for(i = 0; i<sender.response.data.length;i++){
+          tweets[i] = sender.response.data[i];
+        }
+        tweets = this.changeTime(tweets)
+        tweets = this.parsear(tweets)
+
+        tam = this.events.length
+        for(i = 0; i<tweets.length;i++){
+          this.events[tam+i] = tweets[i]
+        }
+        var t = this.$.contenido
+        t.events = this.events
       },
 
       cambiar: function(event,index){
