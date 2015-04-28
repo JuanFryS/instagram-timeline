@@ -12,8 +12,8 @@
 }
 
 #boton_refrescar {
-    text-align: right;
-    padding-bottom: 10px;
+  text-align: right;
+  padding-bottom: 10px;
 }
 
 #contorno{
@@ -109,14 +109,28 @@
 }
 
 #boton{
-  background: #fff;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  box-shadow: 1px 6px 10px 3px #888888;
+  border-radius: 5px;
   cursor: pointer;
   text-align: center;
   font-size: 14px;
-  font-family:'Helvetica','sans-serif';
-  color: #55acee;
+  font-family: 'Montserrat', sans-serif;
+  color: #3f729b;
   font-style: oblique;
-  transition: background .2s linear, border-radius 1s ease-in 1s;
+  background: #E0E1E2;
+  transition: background .2s linear, color .2s linear, border-color .2s linear;
+}
+
+#boton:hover{
+  background: #3f729b;
+  color: #E0E1E2;
+  border-color: #E0E1E2;
 }
 
 #fin {

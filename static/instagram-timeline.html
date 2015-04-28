@@ -36,20 +36,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params='{
-                       "peticion":"{{peticion}}",
-                       "count":"{{count}}"
+                       "access_token":"{{accessToken}}",
+                       "count":"{{count}}",
+                       "max_id":"{{max_id}}"
                        }'
                handleAs='json'
                on-core-response="{{response_load}}"
                >
     </core-ajax>
 
+    <core-ajax
+               id="refresco"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "access_token":"{{accessToken}}",
+                       "min_id":"{{min_id}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response_refresco}}"
+               >
+    </core-ajax>
 
     <!--Cabecera--> 
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
         <p flex style="text-align:center">Instagram</p>
-
+        <core-icon-button id="boton_refrescar" icon="refresh" on-click={{refrescar}}></core-icon-button>
       </div>
     </paper-shadow>
 
@@ -87,7 +100,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-shadow>
       </template>
       <ul id="boton" on-click="{{load}}">
-        <span>Mostrar más</span>
+        <span style="margin-right: 35px">
+          Mostrar más
+        </span>
       </ul>
     </div>
     <div id="fin"></div>
@@ -113,16 +128,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       response: function(event, detail, sender) {
         this.datos = (sender.response)
-        console.log(this.datos)
+        this.min_id = this.datos.data[0].id
         this.events  = this.changeTime(sender.response.data)
         this.events = this.parsear(this.events)
         var t = this.$.contenido;
         t.events =  this.events
       },
 
+      refrescar: function(){
+        this.$.refresco.go()
+      },
+
+      response_refresco: function(event, detail, sender){
+        if(sender.response.data.length > 0){
+          this.min_id = sender.response.data[0].id
+          var tweets = new Array()
+          for(i = 0; i<sender.response.data.length;i++){
+            tweets[i] = sender.response.data[i];
+          }
+          for(i = sender.response.data.length-1; i>-1;i--){
+            this.events.ar.unshift(tweets[i]);
+          }
+        }
+        this.events  = this.changeTime(this.events)
+        this.events = this.parsear(this.events)
+        var t = this.$.contenido
+        t.events = this.events
+      },
 
       load: function(){
-        this.peticion = this.datos.pagination.next_url
+        this.max_id = this.datos.pagination.next_max_id
         this.$.load_more.go()
       },
 
