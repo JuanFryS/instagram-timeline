@@ -147,7 +147,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             tweets[i] = sender.response.data[i];
           }
           for(i = sender.response.data.length-1; i>-1;i--){
-            this.events.ar.unshift(tweets[i]);
+            this.events.unshift(tweets[i]);
           }
         }
         this.events  = this.changeTime(this.events)
