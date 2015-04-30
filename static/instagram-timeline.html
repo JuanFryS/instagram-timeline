@@ -14,6 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 <link rel="import" href="bower_components/core-icons/core-icons.html">
 <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 <polymer-element name="instagram-timeline" attributes=" endpoint accessToken">
@@ -89,9 +90,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </a>
             </template>
             <div horizontal layout>
-              <core-icon id="liked" icon="favorite" style="{{evento.user_has_liked}}"></core-icon>
+              <core-icon-button id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
               <span id="liked_count">{{evento.likes.count}} Me gusta</span>
             </div>
+            <!--<div>
+              <core-icon id="me_gusta" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon>
+            </div>-->
             <div id="descripcion" hidden?="{{evento.caption == null}}">
               <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
               <span id="texto{{index}}" onload="{{cambiar(evento,index)}}"></span>
@@ -99,11 +103,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </ul>
         </paper-shadow>
       </template>
-      <ul id="boton" on-click="{{load}}">
-        <span style="margin-right: 35px">
-          Mostrar más
-        </span>
-      </ul>
+      <template if="{{events != null}}">
+        <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
+          <paper-button id="boton">
+            Mostrar más
+          </paper-button>
+        </div>
+      </template>
     </div>
     <div id="fin"></div>
 
@@ -187,35 +193,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       changeTime: function(list){
         for (i=0;i<list.length;i++){
-          var newDate = new Date();
-          newDate.setTime(list[i].created_time*1000);
-          list[i].tiempo = newDate.toUTCString();
-        }
-        for (i=0;i<list.length;i++){
-          var date = new Date(list[i].tiempo);
+          list[i].tiempo = list[i].created_time*1000
+          var date = list[i].tiempo;
           var current_date = new Date();
-          if((current_date.getDay() - date.getDay()) == 0 ){
-            if((current_date.getHours() - date.getHours()) == 0 ){
-              if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+          current_date = current_date.getTime();
+
+          calculate_date = (current_date-date)/(1000)
+
+          if( Math.floor(calculate_date/3600) == 0){
+            if ( Math.floor(calculate_date/60) == 0){
+              if (Math.floor(calculate_date) == 1){
+                list[i].tiempo = Math.floor(calculate_date)+" segundo"
               }
               else{
-                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+                list[i].tiempo = Math.floor(calculate_date)+" segundos"
               }
             }
             else{
-              if (current_date.getHours() - date.getHours() == 1)
-                list[i].tiempo = current_date.getHours() - date.getHours()+" hora";
-              else
-                list[i].tiempo = current_date.getHours() - date.getHours()+" horas";
+              if ( Math.floor(calculate_date/60) == 1 ){
+                list[i].tiempo = Math.floor(calculate_date/60)+" minuto"
+              }
+              else{
+                list[i].tiempo = Math.floor(calculate_date/60)+" minutos"
+              }
             }
           }
-          else if( (current_date.getDay() - date.getDay()) < 15 ){
-            list[i].tiempo = current_date.getDay() - date.getDay()+" dias";
-          }
           else{
-            var month = ['Enero','Febrero','Marzo','Abril', 'Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-            list[i].tiempo = date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+            if( Math.floor(calculate_date/3600) == 1 ){
+              list[i].tiempo = Math.floor(calculate_date/3600)+" hora"
+            }
+            else{
+              list[i].tiempo = Math.floor(calculate_date/3600)+" horas"
+            }
           }
         }
         return list;
