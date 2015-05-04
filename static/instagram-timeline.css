@@ -72,18 +72,17 @@
   border-radius: 2px;
 }
 
-#liked{
-  height: 30px;
-  width: 30px;
-  margin: 0px;
-  padding: 0px;
+core-icon-button /deep/ core-icon[role=img] {
+  height: 20px;
+  width: 20px;
+  padding: 1px;
+  margin: 1px;
 }
 
 #liked_count{
   color: #3f729b;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 10px;
   font-weight: bold;
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;

@@ -59,6 +59,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                >
     </core-ajax>
 
+  <!--  <core-ajax
+               id="me_gusta"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "media_id":"{{media_id}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response_megusta}}"
+               >
+    </core-ajax>-->
+
     <!--Cabecera--> 
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
@@ -89,13 +101,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </video>
               </a>
             </template>
-            <div horizontal layout>
+            <div style="margin-left: 6px; margin-right: 0px">
               <core-icon-button id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
               <span id="liked_count">{{evento.likes.count}} Me gusta</span>
             </div>
-            <!--<div>
-              <core-icon id="me_gusta" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon>
-            </div>-->
             <div id="descripcion" hidden?="{{evento.caption == null}}">
               <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
               <span id="texto{{index}}" onload="{{cambiar(evento,index)}}"></span>
@@ -121,6 +130,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /*Count hace referencia al numero de elementos nuevos a cargar al darle a mostrar mas*/
       count: 10,
       peticion: "",
+      media_id: "",
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken){
@@ -161,6 +171,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var t = this.$.contenido
         t.events = this.events
       },
+
+/*      meGusta: function(event, detail, sender){
+        identificador = event.target.getAttribute("data-index")
+        media_id = this.events[identificador].id
+        this.$.me_gusta.go()
+      },
+
+      response_megusta: function(event, detail, sender){
+        console.log(sender.response)
+      },*/
 
       load: function(){
         this.max_id = this.datos.pagination.next_max_id
