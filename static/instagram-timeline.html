@@ -59,17 +59,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                >
     </core-ajax>
 
-  <!--  <core-ajax
-               id="me_gusta"
-               url="{{endpoint}}"
-               method="GET"
-               params='{
-                       "media_id":"{{media_id}}"
-                       }'
-               handleAs='json'
-               on-core-response="{{response_megusta}}"
-               >
-    </core-ajax>-->
+    <!--  <core-ajax
+id="me_gusta"
+url="{{endpoint}}"
+method="GET"
+params='{
+"media_id":"{{media_id}}"
+}'
+handleAs='json'
+on-core-response="{{response_megusta}}"
+>
+</core-ajax>-->
 
     <!--Cabecera--> 
     <paper-shadow>
@@ -172,7 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         t.events = this.events
       },
 
-/*      meGusta: function(event, detail, sender){
+      /*      meGusta: function(event, detail, sender){
         identificador = event.target.getAttribute("data-index")
         media_id = this.events[identificador].id
         this.$.me_gusta.go()
@@ -242,8 +242,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if( Math.floor(calculate_date/3600) == 1 ){
               list[i].tiempo = Math.floor(calculate_date/3600)+" hora"
             }
-            else{
+            else if(calculate_date/3600 < 24){
               list[i].tiempo = Math.floor(calculate_date/3600)+" horas"
+            }
+            else{
+              list[i].tiempo = Math.floor(calculate_date/86400)+" dias"
             }
           }
         }
