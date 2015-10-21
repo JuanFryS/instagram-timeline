@@ -10,181 +10,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/core-icons/core-icons.html">
+<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-
-
-<dom-module is="instagram-timeline">
-
-  <style>
-    :host{
-      display: inline-block;
-    }
-
-    #header {
-      background: -webkit-linear-gradient(top,#517fa4,#306088);
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      font-size: 16px;
-      text-align: center;
-    }
-
-    #refresh_button {
-      text-align: right;
-      padding-bottom: 10px;
-    }
-
-    #outline{
-      overflow-y: auto;
-      max-height: 400px;
-      background: #E0E1E2;
-    }
-
-    #box {
-      margin-top: 0px;
-      margin-bottom: 30px;
-      padding-left: 0px;
-      max-width: 400px;
-      min-width: 350px;
-      font-size: 14px;
-      background: white;
-      border-bottom: 1px solid rgba(63, 114, 155, 0.5);
-      border-radius: 5px;
-    }
-
-    #profile_picture{
-      margin-top: 10px;
-      margin-bottom: 5px;
-      margin-left: 5px;
-      border-radius: 30px;
-      float: left;
-      vertical-align:middle;
-      width: 40px;
-      height: 40px;
-    }
-
-    #profile_name{
-      text-decoration:none;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      vertical-align: middle;
-      float: left;
-      margin-left: 5px;
-    }
-
-    #hour{
-      float: right;
-      font-size: 13px;
-      margin-top: 22px;
-      margin-right: 10px;
-      font-family: 'Montserrat', sans-serif;
-      color: #999;
-    }
-
-    #imagen{
-      margin-left: 10px;
-      margin-right: 10px;
-      margin-top: 5px;
-      height: auto;
-      max-width: 95%;
-      border-radius: 2px;
-    }
-
-    core-icon-button /deep/ core-icon[role=img] {
-      height: 20px;
-      width: 20px;
-      padding: 1px;
-      margin: 1px;
-    }
-
-    #liked_count{
-      color: #3f729b;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-    }
-
-    #description{
-      display: inline-block;
-      font-family: 'Montserrat', sans-serif;
-      text-align: justify;
-      margin-left: 15px;
-      margin-right: 15px;
-      margin-bottom: 15px;
-      font-size: 13px;
-      max-width: 400px;
-    }
-
-    #video{
-      max-width: 357px;
-      height: auto;
-      margin-left: 10px;
-    }
-
-    #button{
-      margin-top: -200px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      text-align: center;
-      font-size: 13px;
-      font-family: 'Montserrat', sans-serif;
-      color: #E0E1E2;
-      font-style: oblique;
-      background: #3f729b;
-    }
-
-    #end {
-      background: #3f729b;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      height: 2px;
-    }
-
-    a{
-      font-size: 13px;
-      color: #3f729b;
-      font-weight: bold;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    a:hover {
-      font-weight: 100;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-      background: #b9b9b9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #517fa4;
-    }
-
-  </style>
-
+<polymer-element name="instagram-timeline" attributes="endpoint accessToken language">
   <template>
-    <iron-ajax
-               id="requestTimeline"
+    <link rel="stylesheet" href="instagram-timeline.css">
+    <core-ajax
+               id="request"
                url="{{endpoint}}"
                method="GET"
                params='{
                        "access_token":"{{accessToken}}"
                        }'
                handleAs='json'
-               on-response="{{_responseTimeline}}"
+               on-core-response="{{response}}"
                >
-    </iron-ajax>
+    </core-ajax>
 
-    <iron-ajax
+    <core-ajax
                id="load_more"
                url="{{endpoint}}"
                method="GET"
@@ -194,12 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                        "max_id":"{{max_id}}"
                        }'
                handleAs='json'
-               on-response="{{response_load}}"
+               on-core-response="{{response_load}}"
                >
-    </iron-ajax>
+    </core-ajax>
 
-    <iron-ajax
-               id="refresh"
+    <core-ajax
+               id="refresco"
                url="{{endpoint}}"
                method="GET"
                params='{
@@ -207,18 +55,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                        "min_id":"{{min_id}}"
                        }'
                handleAs='json'
-               on-response="{{response_refresh}}"
+               on-core-response="{{response_refresco}}"
                >
-    </iron-ajax>
+    </core-ajax>
 
-    <iron-ajax
+    <core-ajax
                id="requestLanguage"
                url='language/{{idiom}}'
                method="GET"
                handleAs='json'
-               on-response="{{language_response}}"
+               on-core-response="{{language_response}}"
                >
-    </iron-ajax>
+    </core-ajax>
+
+    <!--<core-ajax
+id="me_gusta"
+url="{{endpoint}}"
+method="GET"
+params='{
+"media_id":"{{media_id}}"
+}'
+handleAs='json'
+on-core-response="{{response_megusta}}"
+>
+</core-ajax>-->
 
     <!--Header-->
     <paper-shadow>
@@ -270,100 +130,128 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </div>
     <div id="end"></div>
+
+
+
   </template>
   <script>
     Polymer({
-      is:"instagram-timeline",
-      properties:{
-        endpint: {
-          type: String,
-          notify:true,
-          reflectToAttrbiute: true
-        },
-        accessToken: {
-          type: String,
-          notify: true,
-          reflectToAttrbiute: true
-        },
-        language: {
-          type:String,
-          value: "es",
-          notify: true,
-          reflectToAttrbiute: true,
-          observer:"_language_changed"
-        },
-        count: {
-          type: Number,
-          value: 10
-        },
-        media_id: {
-          type: String,
-          value: ""
+      /*"Count" is the number of elements to load*/
+      count: 10,
+      media_id: "",
+      language: "es",
+
+      ready: function(event, detail, sender){
+        if(this.accessToken && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idiom = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idiom = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
         }
       },
-      /* Observers*/
-      _language_changed: function(newVal, oldVal) {
-        if(newVal === "en"){
+
+      domReady: function(event, detail,sender){
+        if(this.accessToken && this.events == null && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idiom = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idiom = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
+        }
+      },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if(newVal === "en" && attrName == "language"){
           this.language = "en";
           this.idiom = "en_en.json"
-          this.$.requestLanguage.generateRequest();
+          this.$.requestLanguage.go();
         }
-        else if(newVal === "es"){
+        else if(newVal === "es" && attrName == "language"){
           this.language = "es";
           this.idiom = "es_es.json"
-          this.$.requestLanguage.generateRequest();
+          this.$.requestLanguage.go();
         }
       },
 
-      _responseTimeline: function(event, detail) {
-        this.data = detail.response
-        this.min_id = this.data.data[0].id
-        this.set('events', this.parser(this.data));
-        this.changeTime(this.events)
+      response: function(event, detail, sender) {
+        this.dates = (detail.response)
+        this.min_id = this.dates.data[0].id
+        this.events  = this.changeTime(detail.response.data)
+        this.events = this.parser(this.events)
+        var t = this.$.content;
+        t.events =  this.events
       },
 
-      language_response: function(event, detail){
-        this.language_data = detail.response;
+      language_response: function(event, detail,sender){
+        this.language_data = sender.response;
         if(!this.events){
-          this.$.requestTimeline.generateRequest();
-          var back = this;
-          window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
+          this.$.request.go()
         }
         else{
-          /* TODO cambir this.changeTime para modificar datos con this.set*/
-          this.changeTime(this.events);
+          this.events  = this.changeTime(this.events)
+          this.events = this.parsear(this.events)
+          var t = this.$.contenido;
+          t.events =  this.events
         }
+        /*console.log(this.language_data)*/
       },
 
       refresh_func: function(){
-        this.$.refresh.generateRequest()
+        this.$.refresco.go()
       },
 
-      response_refresh: function(event, detail){      
-        if(newData.length > 0){
-          this.min_id = newData[0].id
-          for(i = newData.length-1; i>-1;i--){
-            this.unshift('events', newData[i]);
+      response_refresco: function(event, detail, sender){
+        if(sender.response.data.length > 0){
+          this.min_id = sender.response.data[0].id
+          var tweets = new Array()
+          for(i = 0; i<sender.response.data.length;i++){
+            tweets[i] = sender.response.data[i];
           }
-          this.changeTime(this.events);
-        };
+          for(i = sender.response.data.length-1; i>-1;i--){
+            this.events.unshift(tweets[i]);
+          }
+        }
+        this.events  = this.changeTime(this.events)
+        this.events = this.parser(this.events)
+        var t = this.$.content
+        t.events = this.events
       },
+
+      /*      meGusta: function(event, detail, sender){
+        identificador = event.target.getAttribute("data-index")
+        media_id = this.events[identificador].id
+        this.$.me_gusta.go()
+      },
+
+      response_megusta: function(event, detail, sender){
+        console.log(sender.response)
+      },*/
 
       load: function(){
-        this.max_id = this.data.pagination.next_max_id
-        this.$.load_more.generateRequest()
+        this.max_id = this.dates.pagination.next_max_id
+        this.$.load_more.go()
       },
 
-      response_load: function(event, detail){
-        this.data = detail.response
+      response_load: function(event, detail, sender){
+        this.dates = sender.response
         var tweets = new Array();
-        for(i = 0; i<tweets.length;i++){
-          this.push('events',this.data[i])
+        for(i = 0; i<sender.response.data.length;i++){
+          tweets[i] = sender.response.data[i];
         }
-        this.changeTime(this.events)
+        tweets = this.changeTime(tweets)
+        tweets = this.parser(tweets)
+
+        size = this.events.length
+        for(i = 0; i<tweets.length;i++){
+          this.events[size+i] = tweets[i]
+        }
+        var t = this.$.content
+        t.events = this.events
       },
 
-      /*TODO inject with innerH-T-M-L attribute*/
       inject: function(event,index){
         if(index!=undefined){
           if(event.caption)
@@ -372,46 +260,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       changeTime: function(list){
-        
         for (i=0;i<list.length;i++){
           list[i].time = list[i].created_time*1000
           var date = list[i].time;
           var current_date = new Date();
           current_date = current_date.getTime();
-          var time
+
           calculate_date = (current_date-date)/(1000)
 
           if( Math.floor(calculate_date/3600) == 0){
             if ( Math.floor(calculate_date/60) == 0){
               if (Math.floor(calculate_date) == 1){
-                time = Math.floor(calculate_date)+" "+this.language_data.second
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.second
               }
               else{
-                time = Math.floor(calculate_date)+" "+this.language_data.seconds
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.seconds
               }
             }
             else{
               if ( Math.floor(calculate_date/60) == 1 ){
-                time = Math.floor(calculate_date/60)+" "+this.language_data.minute
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minute
               }
               else{
-                time = Math.floor(calculate_date/60)+" "+this.language_data.minutes
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minutes
               }
             }
           }
           else{
             if( Math.floor(calculate_date/3600) == 1 ){
-              time = Math.floor(calculate_date/3600)+" "+this.language_data.hour
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hour
             }
             else if(calculate_date/3600 < 24){
-              time = Math.floor(calculate_date/3600)+" "+this.language_data.hours
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hours
             }
             else{
-              time = Math.floor(calculate_date/86400)+" "+this.language_data.days
+              list[i].time = Math.floor(calculate_date/86400)+" "+this.language_data.days
             }
           }
-          this.set("events." + i + ".time", time);
         }
+        return list;
       },
 
       parser: function(lista){
@@ -448,6 +335,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
     });
-    })
+
   </script>
-</dom-module>
+</polymer-element>
