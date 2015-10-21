@@ -12,7 +12,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 
@@ -32,7 +35,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-size: 16px;
       text-align: center;
     }
-
+    #header p {
+      text-align:center;
+    }
+    #content paper-material {
+      margin: 2%;
+      border-radius: 5px;
+    }
     #refresh_button {
       text-align: right;
       padding-bottom: 10px;
@@ -176,9 +185,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestTimeline"
                url="{{endpoint}}"
                method="GET"
-               params='{
-                       "access_token":"{{accessToken}}"
-                       }'
+               params="{{requestTimelineParams}}"
                handleAs='json'
                on-response="{{_responseTimeline}}"
                >
@@ -188,13 +195,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="load_more"
                url="{{endpoint}}"
                method="GET"
-               params='{
-                       "access_token":"{{accessToken}}",
-                       "count":"{{count}}",
-                       "max_id":"{{max_id}}"
-                       }'
+               params="{{load_more_params}}"
                handleAs='json'
-               on-response="{{response_load}}"
+               on-response="{{_response_load}}"
                >
     </iron-ajax>
 
@@ -202,64 +205,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="refresh"
                url="{{endpoint}}"
                method="GET"
-               params='{
-                       "access_token":"{{accessToken}}",
-                       "min_id":"{{min_id}}"
-                       }'
+               params='{{refreshParams}}'
                handleAs='json'
-               on-response="{{response_refresh}}"
+               on-response="{{_response_refresh}}"
                >
     </iron-ajax>
 
     <iron-ajax
                id="requestLanguage"
-               url='language/{{idiom}}'
+               url="{{requestLanguageUrl}}"
                method="GET"
                handleAs='json'
-               on-response="{{language_response}}"
+               on-response="{{_language_response}}"
                >
     </iron-ajax>
 
     <!--Header-->
-    <paper-shadow>
-      <div id ="header" horizontal center-justified layout>
-        <p flex style="text-align:center">Instagram</p>
-        <core-icon-button id="refresh_button" icon="refresh" title="{{language_data.refresh}}" on-click={{refresh_func}}></core-icon-button>
+    <paper-material>
+      <div id ="header" class="horizontal center-justified layout">
+        <p class="flex">Instagram</p>
+        <paper-icon-button id="refresh_button" icon="refresh" title="{{language_data.refresh}}" on-click="refresh_func">
+        </paper-icon-button>
       </div>
-    </paper-shadow>
+    </paper-material>
 
     <!-- Body -->
     <div id="outline">
-      <template id="content" is="auto-binding" repeat="{{event,index in events}}">
-        <paper-shadow z=1 style="margin: 2%;border-radius: 5px">
+      <template id="content" is="dom-if"  items="events">
+        <paper-material elevation="1" >
           <ul id="box">
-            <img id="profile_picture" src="{{event.user.profile_picture}}">
+            <img id="profile_picture" src="{{item.user.profile_picture}}">
             <a id="profile_name"
-               href="https://instagram.com/{{event.user.username}}/" target='_blank'>
-              <p>{{event.user.username}}</p>
+               href="{{_getProfileNameUrl(item.user.username)}}" target='_blank'>
+              <p>{{item.user.username}}</p>
             </a>
-            <span id="hour">{{event.time}}</span>
-            <template if="{{event.type == 'image'}}">
-              <a href="{{event.link}}" target="_blank"><img id="imagen" src="{{event.images.standard_resolution.url}}"></a>
+            <span id="hour">{{item.time}}</span>
+            <template is="dom-if" if="{{_isSameType(item.type,'image')}}">
+             <!-- TODO Voy por aqui. Terminar el parseo a 1.0 -->
+              <a href="{{item.link}}" target="_blank"><img id="imagen" src="{{item.images.standard_resolution.url}}"></a>
             </template>
-            <template if="{{event.type == 'video'}}">
-              <a href="{{event.link}}" target="_blank">
+            <template if="{{item.type == 'video'}}">
+              <a href="{{item.link}}" target="_blank">
                 <video id="video" controls muted>
-                  <source src="{{event.videos.standard_resolution.url}}">
+                  <source src="{{item.videos.standard_resolution.url}}">
                   {{language_data.video}}
                 </video>
               </a>
             </template>
             <div style="margin-left: 6px; margin-right: 0px">
-              <core-icon-button id="liked" icon="favorite" style="{{event.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
-              <span id="liked_count">{{event.likes.count}}{{language_data.like}}</span>
+              <core-icon-button id="liked" icon="favorite" style="{{item.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
+              <span id="liked_count">{{item.likes.count}}{{language_data.like}}</span>
             </div>
-            <div id="description" hidden?="{{event.caption == null}}">
-              <span><a href="https://instagram.com/{{event.user.username}}/" target='_blank'>{{event.user.username}}</a></span>
-              <span id="texto{{index}}" onload="{{inject(event,index)}}"></span>
+            <div id="description" hidden?="{{item.caption == null}}">
+              <span><a href="https://instagram.com/{{item.user.username}}/" target='_blank'>{{item.user.username}}</a></span>
+              <span id="texto{{index}}" onload="{{inject(item,index)}}"></span>
             </div>
           </ul>
-        </paper-shadow>
+        </paper-material>
       </template>
       <template if="{{events != null}}">
         <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
@@ -299,18 +301,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         media_id: {
           type: String,
           value: ""
+        },
+        max_id: String,
+        min_id: String,
+        languageFile: String,
+        requestTimelineParams: {
+          type: String,
+          computed: "_getRequestTimelineParams(accessToken)"
+        },
+        load_more_params: {
+          type: String,
+          computed: "_getLoadMoreParams(accessToken, count, max_id)"
+        },
+        refreshParams: {
+          type: String,
+          computed: "_getRefreshParams(accessToken, min_id)"
+        },
+        requestLanguageUrl: {
+          type: String,
+          computed: "_getRequestLanguageUrl(languageFile)"
         }
       },
+      
+      /*
+       * Computed Functions and complex url
+       */
+      _getRequestTimelineParams: function(accessToken) {
+        return {access_token: accessToken};
+      },
+      _getLoadMoreParams: function(accessToken, count, max_id) {
+        return {access_token:accessToken, count:count, max_id:max_id};
+      },
+      _getRefreshParams: function(accessToken, min_id){
+        return {"access_token": accessToken, "min_id": min_id};
+      },
+      _getRequestLanguageUrl: function(languageFile) {
+        return "language/" + languageFile;
+      }, 
+      _getProfileNameUrl: function(username) {
+        return "https://instagram.com/" + username;
+      },
+      _isSameType: function(type, comparation){
+        return type === comparation;
+      }
       /* Observers*/
       _language_changed: function(newVal, oldVal) {
         if(newVal === "en"){
           this.language = "en";
-          this.idiom = "en_en.json"
+          this.languageFile = "en_en.json"
           this.$.requestLanguage.generateRequest();
         }
         else if(newVal === "es"){
           this.language = "es";
-          this.idiom = "es_es.json"
+          this.languageFile = "es_es.json"
           this.$.requestLanguage.generateRequest();
         }
       },
@@ -319,10 +362,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.data = detail.response
         this.min_id = this.data.data[0].id
         this.set('events', this.parser(this.data));
-        this.changeTime(this.events)
+        this._changeTime(this.events)
       },
 
-      language_response: function(event, detail){
+      _language_response: function(event, detail){
         this.language_data = detail.response;
         if(!this.events){
           this.$.requestTimeline.generateRequest();
@@ -330,8 +373,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
         }
         else{
-          /* TODO cambir this.changeTime para modificar datos con this.set*/
-          this.changeTime(this.events);
+          /* TODO cambir this._changeTime para modificar datos con this.set*/
+          this._changeTime(this.events);
         }
       },
 
@@ -339,13 +382,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.refresh.generateRequest()
       },
 
-      response_refresh: function(event, detail){      
+      _response_refresh: function(event, detail){      
         if(newData.length > 0){
           this.min_id = newData[0].id
           for(i = newData.length-1; i>-1;i--){
             this.unshift('events', newData[i]);
           }
-          this.changeTime(this.events);
+          this._changeTime(this.events);
         };
       },
 
@@ -354,13 +397,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.load_more.generateRequest()
       },
 
-      response_load: function(event, detail){
+      _response_load: function(event, detail){
         this.data = detail.response
         var tweets = new Array();
         for(i = 0; i<tweets.length;i++){
           this.push('events',this.data[i])
         }
-        this.changeTime(this.events)
+        this._changeTime(this.events)
       },
 
       /*TODO inject with innerH-T-M-L attribute*/
@@ -371,8 +414,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
       },
 
-      changeTime: function(list){
-        
+      _changeTime: function(list){
+
         for (i=0;i<list.length;i++){
           list[i].time = list[i].created_time*1000
           var date = list[i].time;
