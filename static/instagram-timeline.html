@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module is="instagram-timeline">
 
-  <style>
+  <style is="custom style">
     :host{
       display: inline-block;
       font-family: 'Montserrat', sans-serif;
@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #header p {
       text-align:center;
     }
-    #content paper-material {
+    .materialShadow {
       margin: 2%;
       border-radius: 5px;
     }
@@ -102,17 +102,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       border-radius: 2px;
     }
 
-    core-icon-button /deep/ core-icon[role=img] {
+    iron-icon {
       height: 20px;
       width: 20px;
-      padding: 1px;
+      padding: 4px;
       margin: 1px;
     } 
-    #liked {
+    #liked[liked] {
       color:rgba(255,0,0,0.7);
     }
 
-    #liked[selected] {
+    #liked {
       color:grey;
     }
     #liked_count{
@@ -131,6 +131,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin-bottom: 15px;
       font-size: 13px;
       max-width: 400px;
+    }
+    #description p {
+      margin:0;
     }
 
     #video{
@@ -239,7 +242,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- Body -->
     <div id="outline">
       <template id="content" is="dom-repeat"  items="{{events}}">
-        <paper-material elevation="1" >
+        <paper-material elevation="1" class="materialShadow">
           <ul id="box">
             <img id="profile_picture" src="{{item.user.profile_picture}}">
             <a id="profile_name"
@@ -259,11 +262,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </a>
             </template>
             <div id="likeContainer">
-              <iron-icon id="liked" icon="favorite" selected$="{{item.user_has_liked}}"></iron-icon>
-              <p id="liked_count">
+              <iron-icon id="liked" icon="favorite" liked$="{{item.user_has_liked}}"></iron-icon>
+              <span id="liked_count">
                 <span>{{item.likes.count}}</span>
                 <span>{{language_data.like}}</span>
-              </p>
+              </span>
             </div>
             <div id="description" hidden$="{{_isCaption(item.caption)}}">
               <p>
@@ -400,14 +403,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.refresh.generateRequest()
       },
 
-      _response_refresh: function(event, detail){      
+      _response_refresh: function(event, detail){
+        var newData = detail.response.data;
         if(newData.length > 0){
           this.min_id = newData[0].id
           for(i = newData.length-1; i>-1;i--){
             this.unshift('events', newData[i]);
           }
-          this._changeTime(this.events);
-        };
+        }
+        this._changeTime(this.events);
       },
 
       load: function(){
