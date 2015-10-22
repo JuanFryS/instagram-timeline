@@ -27,7 +27,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       display: inline-block;
       font-family: 'Montserrat', sans-serif;
     }
-
     #header {
       background: -webkit-linear-gradient(top,#517fa4,#306088);
       color: #fff;
@@ -64,7 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       border-bottom: 1px solid rgba(63, 114, 155, 0.5);
       border-radius: 5px;
     }
-
     #profile_picture{
       margin-top: 10px;
       margin-bottom: 5px;
@@ -146,7 +144,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin-right: 0px 
     }
     #button{
-      margin-top: -200px;
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 10px;
@@ -166,8 +163,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       height: 2px;
     }
     #loadMoreButton {
-      text-align: center;
-      margin-top: -12px;
+      margin-top: -20px;
     }
     a{
       font-size: 13px;
@@ -277,8 +273,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </ul>
         </paper-material>
       </template>
-      <template if="{{events}}" id="loadMoreButton">
-        <div on-click="{{load}}">
+      <template is="dom-if" if="{{thereAreModeData}}">
+        <div on-click="load" class="horizontal center-justified layout" id="loadMoreButton">
           <paper-button id="button">{{language_data.load_more}}</paper-button>
         </div>
       </template>
@@ -308,7 +304,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         count: {
           type: Number,
-          value: 10
+          value: 5
         },
         media_id: {
           type: String,
@@ -338,6 +334,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 60000,
           reflectToAttribute: true
+        },
+        thereAreModeData: {
+          type: Boolean,
+          value:true
         }
       },
 
@@ -415,15 +415,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       load: function(){
+        
         this.max_id = this.data.pagination.next_max_id
         this.$.load_more.generateRequest()
       },
 
       _response_load: function(event, detail){
         this.data = detail.response
-        var tweets = new Array();
-        for(i = 0; i<tweets.length;i++){
-          this.push('events',this.data[i])
+        if (this.data.data || this.data.data.length > 0) {
+          for(i = 0; i<this.data.data.length;i++){
+            this.push('events',this.data.data[i])
+          }
+        } else {
+          this.thereAreModeData = false;
         }
         this._changeTime(this.events)
       },
