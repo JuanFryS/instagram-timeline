@@ -25,12 +25,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <style>
     :host{
       display: inline-block;
+      font-family: 'Montserrat', sans-serif;
     }
 
     #header {
       background: -webkit-linear-gradient(top,#517fa4,#306088);
       color: #fff;
-      font-family: 'Montserrat', sans-serif;
       font-weight: 800;
       font-size: 16px;
       text-align: center;
@@ -90,7 +90,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-size: 13px;
       margin-top: 22px;
       margin-right: 10px;
-      font-family: 'Montserrat', sans-serif;
       color: #999;
     }
 
@@ -108,20 +107,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 20px;
       padding: 1px;
       margin: 1px;
+    } 
+    #liked {
+      color:rgba(255,0,0,0.7);
     }
 
+    #liked[selected] {
+      color:grey;
+    }
     #liked_count{
       color: #3f729b;
       margin-top: 10px;
       margin-bottom: 10px;
       font-weight: bold;
-      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
     }
 
     #description{
       display: inline-block;
-      font-family: 'Montserrat', sans-serif;
       text-align: justify;
       margin-left: 15px;
       margin-right: 15px;
@@ -135,7 +138,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       height: auto;
       margin-left: 10px;
     }
-
+    #likeContainer {
+      margin-left: 6px;
+      margin-right: 0px 
+    }
     #button{
       margin-top: -200px;
       margin-left: auto;
@@ -145,7 +151,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       cursor: pointer;
       text-align: center;
       font-size: 13px;
-      font-family: 'Montserrat', sans-serif;
       color: #E0E1E2;
       font-style: oblique;
       background: #3f729b;
@@ -157,12 +162,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       border-bottom-right-radius: 5px;
       height: 2px;
     }
-
+    #loadMoreButton {
+      text-align: center;
+      margin-top: -12px;
+    }
     a{
       font-size: 13px;
       color: #3f729b;
       font-weight: bold;
-      font-family: 'Montserrat', sans-serif;
     }
 
     a:hover {
@@ -187,7 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                method="GET"
                params="{{requestTimelineParams}}"
                handleAs='json'
-               on-response="{{_responseTimeline}}"
+               on-response="_responseTimeline"
                >
     </iron-ajax>
 
@@ -197,7 +204,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                method="GET"
                params="{{load_more_params}}"
                handleAs='json'
-               on-response="{{_response_load}}"
+               on-response="_response_load"
                >
     </iron-ajax>
 
@@ -205,9 +212,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="refresh"
                url="{{endpoint}}"
                method="GET"
-               params='{{refreshParams}}'
+               params="{{refreshParams}}"
                handleAs='json'
-               on-response="{{_response_refresh}}"
+               on-response="_response_refresh"
                >
     </iron-ajax>
 
@@ -216,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{requestLanguageUrl}}"
                method="GET"
                handleAs='json'
-               on-response="{{_language_response}}"
+               on-response="_language_response"
                >
     </iron-ajax>
 
@@ -231,43 +238,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- Body -->
     <div id="outline">
-      <template id="content" is="dom-if"  items="events">
+      <template id="content" is="dom-repeat"  items="{{events}}">
         <paper-material elevation="1" >
           <ul id="box">
             <img id="profile_picture" src="{{item.user.profile_picture}}">
             <a id="profile_name"
-               href="{{_getProfileNameUrl(item.user.username)}}" target='_blank'>
+               href="{{_get(item.user.username)}}" target='_blank'>
               <p>{{item.user.username}}</p>
             </a>
             <span id="hour">{{item.time}}</span>
             <template is="dom-if" if="{{_isSameType(item.type,'image')}}">
-             <!-- TODO Voy por aqui. Terminar el parseo a 1.0 -->
               <a href="{{item.link}}" target="_blank"><img id="imagen" src="{{item.images.standard_resolution.url}}"></a>
             </template>
-            <template if="{{item.type == 'video'}}">
+            <template is="dom-if" if="{{_isSameType(item.type, 'video')}}">
               <a href="{{item.link}}" target="_blank">
                 <video id="video" controls muted>
                   <source src="{{item.videos.standard_resolution.url}}">
-                  {{language_data.video}}
+                  <span>{{language_data.video}}</span>
                 </video>
               </a>
             </template>
-            <div style="margin-left: 6px; margin-right: 0px">
-              <core-icon-button id="liked" icon="favorite" style="{{item.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
-              <span id="liked_count">{{item.likes.count}}{{language_data.like}}</span>
+            <div id="likeContainer">
+              <iron-icon id="liked" icon="favorite" selected$="{{item.user_has_liked}}"></iron-icon>
+              <p id="liked_count">
+                <span>{{item.likes.count}}</span>
+                <span>{{language_data.like}}</span>
+              </p>
             </div>
-            <div id="description" hidden?="{{item.caption == null}}">
-              <span><a href="https://instagram.com/{{item.user.username}}/" target='_blank'>{{item.user.username}}</a></span>
-              <span id="texto{{index}}" onload="{{inject(item,index)}}"></span>
+            <div id="description" hidden$="{{_isCaption(item.caption)}}">
+              <p>
+                <span><a href="{{_get(item.user.username)}}/" target='_blank'>{{item.user.username}}</a></span>
+                <span inner-h-t-m-l="{{item.caption.text}}"></span>
+              </p>
             </div>
           </ul>
         </paper-material>
       </template>
-      <template if="{{events != null}}">
-        <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
-          <paper-button id="button">
-            {{language_data.load_more}}
-          </paper-button>
+      <template if="{{events}}" id="loadMoreButton">
+        <div on-click="{{load}}">
+          <paper-button id="button">{{language_data.load_more}}</paper-button>
         </div>
       </template>
     </div>
@@ -280,18 +289,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         endpint: {
           type: String,
           notify:true,
-          reflectToAttrbiute: true
+          reflectToAttribute: true
         },
         accessToken: {
           type: String,
           notify: true,
-          reflectToAttrbiute: true
+          reflectToAttribute: true
         },
         language: {
           type:String,
           value: "es",
           notify: true,
-          reflectToAttrbiute: true,
+          reflectToAttribute: true,
           observer:"_language_changed"
         },
         count: {
@@ -320,9 +329,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         requestLanguageUrl: {
           type: String,
           computed: "_getRequestLanguageUrl(languageFile)"
+        },
+        /* refres_time in seconds */
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true
         }
       },
-      
+
       /*
        * Computed Functions and complex url
        */
@@ -333,17 +348,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {access_token:accessToken, count:count, max_id:max_id};
       },
       _getRefreshParams: function(accessToken, min_id){
-        return {"access_token": accessToken, "min_id": min_id};
+        return {access_token: accessToken, min_id: min_id};
       },
       _getRequestLanguageUrl: function(languageFile) {
         return "language/" + languageFile;
       }, 
-      _getProfileNameUrl: function(username) {
+      _get: function(username) {
         return "https://instagram.com/" + username;
       },
       _isSameType: function(type, comparation){
         return type === comparation;
-      }
+      },
+      _isCaption: function(caption) {
+        return caption === null;
+      },
       /* Observers*/
       _language_changed: function(newVal, oldVal) {
         if(newVal === "en"){
@@ -359,9 +377,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _responseTimeline: function(event, detail) {
-        this.data = detail.response
+        this.data = detail.response;
         this.min_id = this.data.data[0].id
-        this.set('events', this.parser(this.data));
+        this.set('events', this.parser(this.data.data));
         this._changeTime(this.events)
       },
 
@@ -404,14 +422,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.push('events',this.data[i])
         }
         this._changeTime(this.events)
-      },
-
-      /*TODO inject with innerH-T-M-L attribute*/
-      inject: function(event,index){
-        if(index!=undefined){
-          if(event.caption)
-            this.injectBoundHTML(event.caption.text, this.$.content.parentNode.children[1+index].children[0].children[7].children[1])
-            }
       },
 
       _changeTime: function(list){
@@ -490,7 +500,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '<a href="https://instagram.com/explore/tags/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       }
-    });
     })
   </script>
 </dom-module>
