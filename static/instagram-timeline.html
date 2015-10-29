@@ -20,9 +20,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-<dom-module is="instagram-timeline">
+<dom-module id="instagram-timeline">
 
-  <style is="custom style">
+  <style is="custom-style">
     :host{
       display: inline-block;
       font-family: 'Montserrat', sans-serif;
@@ -188,12 +188,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template>
     <iron-ajax
-               id="requestTimeline"
+               id="requesttimeline"
                url="{{endpoint}}"
                method="GET"
-               params="{{requestTimelineParams}}"
+               params="{{requesttimelineParams}}"
                handleAs='json'
-               on-response="_responseTimeline"
+               on-response="_responsetimeline"
                >
     </iron-ajax>
 
@@ -313,9 +313,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         max_id: String,
         min_id: String,
         languageFile: String,
-        requestTimelineParams: {
+        requesttimelineParams: {
           type: String,
-          computed: "_getRequestTimelineParams(accessToken)"
+          computed: "_getRequesttimelineParams(accessToken)"
         },
         load_more_params: {
           type: String,
@@ -344,7 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /*
        * Computed Functions and complex url
        */
-      _getRequestTimelineParams: function(accessToken) {
+      _getRequesttimelineParams: function(accessToken) {
         return {access_token: accessToken};
       },
       _getLoadMoreParams: function(accessToken, count, max_id) {
@@ -379,7 +379,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      _responseTimeline: function(event, detail) {
+      _responsetimeline: function(event, detail) {
         this.data = detail.response;
         this.min_id = this.data.data[0].id
         this.set('events', this.parser(this.data.data));
@@ -389,9 +389,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _language_response: function(event, detail){
         this.language_data = detail.response;
         if(!this.events){
-          this.$.requestTimeline.generateRequest();
+          this.$.requesttimeline.generateRequest();
           var back = this;
-          window.setInterval(function(){back.$.requestTimeline.generateRequest();}, back.refresh_time);
+          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
         }
         else{
           /* TODO cambir this._changeTime para modificar datos con this.set*/
