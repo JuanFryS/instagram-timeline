@@ -328,7 +328,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         requestLanguageUrl: {
           type: String,
-          computed: "_getRequestLanguageUrl(languageFile)"
+          computed: "_getRequestLanguageUrl(component_directory, languageFile)"
         },
         /* refres_time in seconds */
         refresh_time: {
@@ -339,12 +339,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         thereAreModeData: {
           type: Boolean,
           value:true
+        },
+        component_directory: {
+          type: String,
+          value: "",
+          reflectToAttribute: true
         }
       },
 
+
+      ready: function() {
+        this.$.requestLanguage.generateRequest();
+
+      },
       /*
        * Computed Functions and complex url
        */
+
       _getRequesttimelineParams: function(accessToken) {
         return {access_token: accessToken};
       },
@@ -354,8 +365,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _getRefreshParams: function(accessToken, min_id){
         return {access_token: accessToken, min_id: min_id};
       },
-      _getRequestLanguageUrl: function(languageFile) {
-        return "language/" + languageFile;
+      _getRequestLanguageUrl: function(component_directory, languageFile) {
+        return this.component_directory + "language/" + languageFile;
       }, 
       _get: function(username) {
         return "https://instagram.com/" + username;
@@ -371,11 +382,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(newVal === "en"){
           this.language = "en";
           this.languageFile = "en_en.json"
-          this.$.requestLanguage.generateRequest();
         }
         else if(newVal === "es"){
           this.language = "es";
           this.languageFile = "es_es.json"
+        }
+        if (this.component_directory) {
           this.$.requestLanguage.generateRequest();
         }
       },
@@ -416,7 +428,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       load: function(){
-        
+
         this.max_id = this.data.pagination.next_max_id
         this.$.load_more.generateRequest()
       },
