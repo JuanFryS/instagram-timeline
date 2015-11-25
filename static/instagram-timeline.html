@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/paper-button/paper-button.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="./bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="./bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="./bower_components/paper-icon-button/paper-icon-button.html">
 
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 
@@ -347,6 +347,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      // Adds latency to the component
+      sleep: function(milliseconds) {
+      console.log("Se le aplica el retardo");
+      var start = new Date().getTime();
+      while ((new Date().getTime() - start) <= milliseconds);
+      },
 
       ready: function() {
         this.$.requestLanguage.generateRequest();
@@ -393,6 +399,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _responsetimeline: function(event, detail) {
+        this.sleep(2000);
         this.data = detail.response;
         this.min_id = this.data.data[0].id
         this.set('events', this.parser(this.data.data));
@@ -417,6 +424,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_refresh: function(event, detail){
+        this.sleep(2000);
         var newData = detail.response.data;
         if(newData.length > 0){
           this.min_id = newData[0].id
@@ -434,6 +442,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_load: function(event, detail){
+        this.sleep(2000);
         this.data = detail.response
         if (this.data.data || this.data.data.length > 0) {
           for(i = 0; i<this.data.data.length;i++){
