@@ -285,7 +285,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is:"instagram-timeline",
       properties:{
-        endpint: {
+        endpoint: {
           type: String,
           notify:true,
           reflectToAttribute: true
@@ -344,9 +344,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "",
           reflectToAttribute: true
+        },
+        latency_time: {
+          type: Number,
+          value: 2000
         }
       },
-
       // Adds latency to the component
       sleep: function(milliseconds) {
       console.log("Se le aplica el retardo");
@@ -399,7 +402,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _responsetimeline: function(event, detail) {
-        this.sleep(2000);
+        this.sleep(this.latency_time);
         this.data = detail.response;
         this.min_id = this.data.data[0].id
         this.set('events', this.parser(this.data.data));
@@ -424,7 +427,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_refresh: function(event, detail){
-        this.sleep(2000);
+        this.sleep(this.latency_time);
         var newData = detail.response.data;
         if(newData.length > 0){
           this.min_id = newData[0].id
@@ -442,7 +445,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_load: function(event, detail){
-        this.sleep(2000);
+        this.sleep(this.latency_time);
         this.data = detail.response
         if (this.data.data || this.data.data.length > 0) {
           for(i = 0; i<this.data.data.length;i++){
