@@ -345,7 +345,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: "",
           reflectToAttribute: true
         },
-        accuracy_probability: {
+        accuracyProbability: {
           type: Number,
           value: 15,
           reflectToAttribute: true,
@@ -368,7 +368,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        },
       changeData: function(data) {
          for (var i=0;i < data.length; i++){
-           if(this.probability(this.accuracy_probability)){
+           if(this.probability(this.accuracyProbability)){
             data[i].user.username = "Usuario";
            }
          }
