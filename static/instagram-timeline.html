@@ -45,13 +45,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align: right;
       padding-bottom: 10px;
     }
-
     #outline{
       overflow-y: auto;
       max-height: 400px;
       background: #E0E1E2;
     }
-
     #box {
       margin-top: 0px;
       margin-bottom: 30px;
@@ -73,7 +71,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 40px;
       height: 40px;
     }
-
     #profile_name{
       text-decoration:none;
       margin-top: 10px;
@@ -82,7 +79,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       float: left;
       margin-left: 5px;
     }
-
     #hour{
       float: right;
       font-size: 13px;
@@ -90,7 +86,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin-right: 10px;
       color: #999;
     }
-
     #imagen{
       margin-left: 10px;
       margin-right: 10px;
@@ -99,7 +94,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       max-width: 95%;
       border-radius: 2px;
     }
-
     iron-icon {
       height: 20px;
       width: 20px;
@@ -109,7 +103,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #liked[liked] {
       color:rgba(255,0,0,0.7);
     }
-
     #liked {
       color:grey;
     }
@@ -120,7 +113,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-weight: bold;
       font-size: 12px;
     }
-
     #description{
       display: inline-block;
       text-align: justify;
@@ -133,7 +125,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #description p {
       margin:0;
     }
-
     #video{
       max-width: 357px;
       height: auto;
@@ -155,7 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-style: oblique;
       background: #3f729b;
     }
-
     #end {
       background: #3f729b;
       border-bottom-left-radius: 5px;
@@ -170,20 +160,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       color: #3f729b;
       font-weight: bold;
     }
-
     a:hover {
       font-weight: 100;
     }
-
     ::-webkit-scrollbar {
       width: 8px;
       background: #b9b9b9;
     }
-
     ::-webkit-scrollbar-thumb {
       background: #517fa4;
     }
-
   </style>
 
   <template>
@@ -206,17 +192,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                on-response="_response_load"
                >
     </iron-ajax>
-
-    <iron-ajax
-               id="refresh"
-               url="{{endpoint}}"
-               method="GET"
-               params="{{refreshParams}}"
-               handleAs='json'
-               on-response="_response_refresh"
-               >
-    </iron-ajax>
-
+    <!--<iron-ajax
+id="refresh"
+url="{{endpoint}}"
+method="GET"
+params="{{refreshParams}}"
+handleAs='json'
+on-response="_response_refresh"
+>
+</iron-ajax>-->
     <iron-ajax
                id="requestLanguage"
                url="{{requestLanguageUrl}}"
@@ -312,7 +296,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: ""
         },
         max_id: String,
-        min_id: String,
+        /*        min_id: String,*/
         languageFile: String,
         requesttimelineParams: {
           type: String,
@@ -322,10 +306,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           computed: "_getLoadMoreParams(accessToken, count, max_id)"
         },
-        refreshParams: {
+        /*        refreshParams: {
           type: String,
           computed: "_getRefreshParams(accessToken, min_id)"
-        },
+        },*/
         requestLanguageUrl: {
           type: String,
           computed: "_getRequestLanguageUrl(component_directory, languageFile)"
@@ -350,8 +334,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready: function() {
         this.$.requestLanguage.generateRequest();
-
       },
+
       /*
        * Computed Functions and complex url
        */
@@ -362,9 +346,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _getLoadMoreParams: function(accessToken, count, max_id) {
         return {access_token:accessToken, count:count, max_id:max_id};
       },
-      _getRefreshParams: function(accessToken, min_id){
+      /*      _getRefreshParams: function(accessToken, min_id){
         return {access_token: accessToken, min_id: min_id};
-      },
+      },*/
       _getRequestLanguageUrl: function(component_directory, languageFile) {
         return this.component_directory + "language/" + languageFile;
       }, 
@@ -394,29 +378,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _responsetimeline: function(event, detail) {
         this.data = detail.response;
-        this.min_id = this.data.data[0].id
+        /*        this.min_id = this.data.data[0].id*/
         this.set('events', this.parser(this.data.data));
         this._changeTime(this.events)
       },
 
       _language_response: function(event, detail){
         this.language_data = detail.response;
-        if(!this.events){
-          this.$.requesttimeline.generateRequest();
-          var back = this;
-          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
-        }
+        /*        if(!this.events){*/
+        this.$.requesttimeline.generateRequest();
+        var back = this;
+        window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+        /*}
         else{
-          /* TODO cambir this._changeTime para modificar datos con this.set*/
+           TODO cambir this._changeTime para modificar datos con this.set
           this._changeTime(this.events);
-        }
+        }*/
       },
 
       refresh_func: function(){
-        this.$.refresh.generateRequest()
+        this.$.requestLanguage.generateRequest();
       },
 
-      _response_refresh: function(event, detail){
+      /*      _response_refresh: function(event, detail){
         var newData = detail.response.data;
         if(newData.length > 0){
           this.min_id = newData[0].id
@@ -425,10 +409,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
         this._changeTime(this.events);
-      },
+      },*/
 
       load: function(){
-
         this.max_id = this.data.pagination.next_max_id
         this.$.load_more.generateRequest()
       },

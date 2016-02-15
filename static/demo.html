@@ -18,15 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body unresolved>
     <template id="Demo" is="dom-bind">
-      <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}">
+      <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}" component_directory="./">
       </instagram-timeline>
       <br>
-      <button name="es" on-click="changeIdiom">Spanish</button>
-      <button name="en" on-click="changeIdiom">English</button>
-      
+      <button on-click="prueba" name="es">Spanish</button>
+      <button on-click="prueba" name="en">English</button>
       <script>
         Demo.language = "es";
-        Demo.changeIdiom = function(event,detail) {
+        Demo.prueba = function(event,detail) {
           Demo.language = event.target.getAttribute('name');
         }
       </script>
