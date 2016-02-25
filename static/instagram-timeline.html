@@ -45,13 +45,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align: right;
       padding-bottom: 10px;
     }
-
     #outline{
       overflow-y: auto;
       max-height: 400px;
       background: #E0E1E2;
     }
-
     #box {
       margin-top: 0px;
       margin-bottom: 30px;
@@ -73,7 +71,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 40px;
       height: 40px;
     }
-
     #profile_name{
       text-decoration:none;
       margin-top: 10px;
@@ -82,7 +79,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       float: left;
       margin-left: 5px;
     }
-
     #hour{
       float: right;
       font-size: 13px;
@@ -90,7 +86,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin-right: 10px;
       color: #999;
     }
-
     #imagen{
       margin-left: 10px;
       margin-right: 10px;
@@ -99,7 +94,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       max-width: 95%;
       border-radius: 2px;
     }
-
     iron-icon {
       height: 20px;
       width: 20px;
@@ -109,7 +103,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #liked[liked] {
       color:rgba(255,0,0,0.7);
     }
-
     #liked {
       color:grey;
     }
@@ -120,7 +113,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-weight: bold;
       font-size: 12px;
     }
-
     #description{
       display: inline-block;
       text-align: justify;
@@ -133,7 +125,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     #description p {
       margin:0;
     }
-
     #video{
       max-width: 357px;
       height: auto;
@@ -155,7 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-style: oblique;
       background: #3f729b;
     }
-
     #end {
       background: #3f729b;
       border-bottom-left-radius: 5px;
@@ -170,20 +160,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       color: #3f729b;
       font-weight: bold;
     }
-
     a:hover {
       font-weight: 100;
     }
-
     ::-webkit-scrollbar {
       width: 8px;
       background: #b9b9b9;
     }
-
     ::-webkit-scrollbar-thumb {
       background: #517fa4;
     }
-
   </style>
 
   <template>
@@ -285,7 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is:"instagram-timeline",
       properties:{
-        endpint: {
+        endpoint: {
           type: String,
           notify:true,
           reflectToAttribute: true
@@ -330,7 +316,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           computed: "_getRequestLanguageUrl(component_directory, languageFile)"
         },
-        /* refres_time in seconds */
         refresh_time: {
           type: Number,
           value: 60000,
@@ -347,15 +332,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-
       ready: function() {
         this.$.requestLanguage.generateRequest();
-
       },
+      
       /*
        * Computed Functions and complex url
        */
-
       _getRequesttimelineParams: function(accessToken) {
         return {access_token: accessToken};
       },
@@ -377,7 +360,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _isCaption: function(caption) {
         return caption === null;
       },
-      /* Observers*/
+
       _language_changed: function(newVal, oldVal) {
         if(newVal === "en"){
           this.language = "en";

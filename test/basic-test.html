@@ -1,0 +1,57 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../static/instagram-timeline.html">
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id="instagram-timeline-fixture">
+      <template>
+        <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="es">
+        </instagram-timeline>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<instagram-timeline>', function() {
+        var myEl;
+        setup(function() {
+          myEl = fixture('instagram-timeline-fixture');
+        });
+
+        test('defines the "language" property', function() {
+          assert.equal(myEl.language, "es");
+        });
+        test('defines the "count" property', function() {
+          assert.equal(myEl.count, 20);
+        });
+        test('defines the "refresh_time" property', function() {
+          assert.equal(myEl.refresh_time, 60000);
+        });
+        test('check _getRequesttimelineParams ', function(){
+          var token = myEl.accessToken
+          var ret = myEl._getRequesttimelineParams(token)
+          assert.equal(ret.access_token, token)
+        });
+      });
+    </script>
+
+  </body>
+</html>
