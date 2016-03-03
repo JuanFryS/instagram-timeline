@@ -331,32 +331,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true
         }
       },
-
+      
       ready: function() {
         this.$.requestLanguage.generateRequest();
       },
-      
+
       /*
        * Computed Functions and complex url
        */
       _getRequesttimelineParams: function(accessToken) {
         return {access_token: accessToken};
       },
+
       _getLoadMoreParams: function(accessToken, count, max_id) {
         return {access_token:accessToken, count:count, max_id:max_id};
       },
+
       _getRefreshParams: function(accessToken, min_id){
         return {access_token: accessToken, min_id: min_id};
       },
+
       _getRequestLanguageUrl: function(component_directory, languageFile) {
         return this.component_directory + "language/" + languageFile;
       }, 
+
       _getUser: function(username) {
         return "https://instagram.com/" + username;
       },
+
       _isSameType: function(type, comparation){
         return type === comparation;
       },
+
       _isCaption: function(caption) {
         return caption === null;
       },
@@ -387,7 +393,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(!this.events){
           this.$.requesttimeline.generateRequest();
           var back = this;
-          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+          window.setInterval(function(){
+            back.$.refresh.generateRequest();
+          }, back.refresh_time);
         }
         else{
           /* TODO cambir this._changeTime para modificar datos con this.set*/
@@ -505,5 +513,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
     })
+
   </script>
 </dom-module>
