@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../static/instagram-timeline.html">
+    <!--<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">-->
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id="fixture">
+      <template>
+        <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}">
+        </instagram-timeline>
+      </template>
+    </test-fixture>
+
+    <script>
+      describe('instagram-timeline', function(){
+        var myEl;
+        beforeEach(function(){
+          myEl = fixture('fixture');
+        });
+
+        describe('ready function', function(){
+          beforeEach(function(){
+            myEl.$.requestLanguage.generateRequest = sinon.mock();
+          });
+          it('is defined', function(){
+            assert.isDefined(myEl.ready);
+          });
+          it('is called', function(){
+            myEl.ready();
+            sinon.assert.calledOnce(myEl.$.requestLanguage.generateRequest);
+          });
+        });
+
+        describe('_language_response function'  , function(){
+          var language = {something: 'it is okey'}
+          var detail = {response: language};
+          var event = {};
+          beforeEach(function(){
+            myEl.$.requesttimeline.generateRequest = sinon.mock();
+          });
+          it('is defined', function() {
+            assert.isDefined(myEl._language_response);
+          });
+          it('sets language_data property', function(){
+            myEl.language_data = {};
+            myEl._language_response(event, detail);
+            assert.equal(myEl.language_data, language)
+          });
+          it('calls requesttimeline when this.event is undefined', function(){
+            myEl.events = undefined
+            myEl._language_response(event, detail);
+            sinon.assert.calledOnce(myEl.$.requesttimeline.generateRequest);
+          });
+          /*it('calls _changeTime when this.event is defined', function(){
+            myEl.events = {event: "evento"};
+            myEl._language_response(event, detail);
+            sinon.assert.calledOnce(myEl._changeTime(event));
+          });*/
+        });
+      });
+    </script>
+
+  </body>
+</html>

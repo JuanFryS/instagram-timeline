@@ -17,7 +17,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </script><!-- end Mixpanel -->
     
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<<<<<<< HEAD
     <title>Instagram-timeline Latency Tracker</title>
+=======
+    <title>Instagram</title>
+    <link rel="shortcut icon" href="favicon.ico">
+>>>>>>> e4bcf01e54360d4c5091a82e04b46e769e648928
 
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="instagram-timeline.html">
@@ -30,37 +35,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
-      <br>
-      <button on-click="trackRequests"> Track </button>
-    </template>
-      <script>
-      </script>
+
     <script type="text/javascript">
 
         Demo.language = "es";
         Demo.changeIdiom = function(event,detail) {
           Demo.language = event.target.getAttribute('name');
-        }
-
-        Demo.trackRequests = function(){
-          var resourceList = performance.getEntriesByType("resource");
-          // console.log(window.performance.navigation)
-          // console.log(window.performance.timing)
-          // console.log(performance.getEntries());
-          console.log(resourceList);
-          var endpoint = document.getElementsByTagName("instagram-timeline")[0].getAttribute("endpoint");
-          //We search for the request done to the endpoint desired
-          for (var i = 0; i<resourceList.length; i++) {
-            if(resourceList[i].initiatorType === "xmlhttprequest" && resourceList[i].name.match(endpoint)!= null)
-              console.log(resourceList[i]);
-              // We send to MixPanel the desired data about instagram timeline
-              var properties = {
-                "component": "instagram-timeline",
-                "endToEndTime": resourceList[i].duration,
-                "requestTime": resourceList[i].fetchStart - resourceList[i].responseEnd
-              }
-              mixpanel.track("latencyMetric", properties);
-          };
         }
     </script>
   </body>
