@@ -191,6 +191,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requesttimeline"
                url="{{endpoint}}"
                method="GET"
+               headers="{'Timing-Allow-origin': '*'}"
                params="{{requesttimelineParams}}"
                handleAs='json'
                on-response="_responsetimeline"
@@ -201,6 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="load_more"
                url="{{endpoint}}"
                method="GET"
+               headers="{'Timing-Allow-origin': '*'}"
                params="{{load_more_params}}"
                handleAs='json'
                on-response="_response_load"
@@ -211,6 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="refresh"
                url="{{endpoint}}"
                method="GET"
+               headers="{'Timing-Allow-origin': '*'}"
                params="{{refreshParams}}"
                handleAs='json'
                on-response="_response_refresh"
@@ -221,6 +224,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestLanguage"
                url="{{requestLanguageUrl}}"
                method="GET"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_language_response"
                >
@@ -285,7 +289,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is:"instagram-timeline",
       properties:{
-        endpint: {
+        endpoint: {
           type: String,
           notify:true,
           reflectToAttribute: true
@@ -346,11 +350,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true
         }
       },
-
-
+      resourceTiming: function(){
+          var resourceList = performance.getEntriesByType("resource");
+          console.log("Hola")
+          console.log(resourceList);
+          console.log(performance.getEntries());
+      },
       ready: function() {
         this.$.requestLanguage.generateRequest();
-
       },
       /*
        * Computed Functions and complex url
