@@ -192,6 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params="{{requesttimelineParams}}"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_responsetimeline"
                >
@@ -202,6 +203,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params="{{load_more_params}}"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_response_load"
                >
@@ -212,6 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url="{{endpoint}}"
                method="GET"
                params="{{refreshParams}}"
+               headers="{'Timing-Allow-origin': '*'}"
                handleAs='json'
                on-response="_response_refresh"
                >
@@ -220,6 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-ajax
                id="requestLanguage"
                url="{{requestLanguageUrl}}"
+               headers="{'Timing-Allow-origin': '*'}"
                method="GET"
                handleAs='json'
                on-response="_language_response"
