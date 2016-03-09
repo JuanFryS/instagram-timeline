@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           it('is called', function(){
             myEl.ready();
-            sinon.assert.calledOnce(myEl.$.requestLanguage.generateRequest);
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
           });
         });
 
@@ -57,25 +57,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var event = {};
           beforeEach(function(){
             myEl.$.requesttimeline.generateRequest = sinon.mock();
+            myEl.$.refresh.generateRequest = sinon.mock();
           });
+
           it('is defined', function() {
             assert.isDefined(myEl._language_response);
           });
           it('sets language_data property', function(){
             myEl.language_data = {};
             myEl._language_response(event, detail);
-            assert.equal(myEl.language_data, language)
+            assert.equal(myEl.language_data, language);
           });
           it('calls requesttimeline when this.event is undefined', function(){
             myEl.events = undefined
             myEl._language_response(event, detail);
-            sinon.assert.calledOnce(myEl.$.requesttimeline.generateRequest);
+            sinon.assert.called(myEl.$.requesttimeline.generateRequest);
           });
-          /*it('calls _changeTime when this.event is defined', function(){
-            myEl.events = {event: "evento"};
+
+/*          it('calls refresh??? ', function(){
+            myEl.events = undefined
             myEl._language_response(event, detail);
-            sinon.assert.calledOnce(myEl._changeTime(event));
+            sinon.assert.called(myEl.$.refresh.generateRequest);
           });*/
+
+          it('calls _changeTime when this.event is alredy defined', function(){
+            var el = fixture('fixture') ;
+            el._changeTime = sinon.mock();
+            el.events = [{event: "event"}, {event2: "event2"}];
+            el._language_response(event, detail);
+            sinon.assert.called(el._changeTime)
+          });
         });
       });
     </script>
