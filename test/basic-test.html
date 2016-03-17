@@ -19,7 +19,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../static/instagram-timeline.html">
-    <!--<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">-->
+    <link rel="import" href="../bower_components/test-fixture/test-fixture.html">
+
   </head>
   <body>
 
@@ -34,12 +35,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
       describe('instagram-timeline', function(){
         var myEl;
-        beforeEach(function(){
+        before(function(){
           myEl = fixture('fixture');
         });
 
         describe('ready function', function(){
-          beforeEach(function(){
+          before(function(){
             myEl.$.requestLanguage.generateRequest = sinon.mock();
           });
           it('is defined', function(){
@@ -52,44 +53,297 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         describe('_language_response function'  , function(){
-          var language = {something: 'it is okey'}
+          var language = {
+            "refresh" : "Refrescar",
+            "video" : "El video no puede ser reproducido",
+            "load_more" :  "Mostrar más",
+            "second" : "segundo",
+            "seconds" : "segundos",
+            "minute" : "minuto",
+            "minutes" : "minutos",
+            "hour" : "hora",
+            "hours" : "horas",
+            "days" : "días",
+            "like" : " Me gusta"
+          };
           var detail = {response: language};
           var event = {};
-          beforeEach(function(){
-            myEl.$.requesttimeline.generateRequest = sinon.mock();
-            myEl.$.refresh.generateRequest = sinon.mock();
+
+          before(function(){
+            myEl = fixture('fixture');
           });
 
           it('is defined', function() {
             assert.isDefined(myEl._language_response);
           });
-          it('sets language_data property', function(){
+
+          /* 
+            ** Ejemplo de spy **
+            var languageResponse = sinon.spy(myEl, '_language_response');
+            myEl._language_response(event, detail);
+            sinon.assert.calledOnce(languageResponse);
+            languageResponse.reset();
+            */
+          it('sets language_data properly', function(){
             myEl.language_data = {};
             myEl._language_response(event, detail);
-            assert.equal(myEl.language_data, language);
+            assert.equal(language, myEl.language_data)
           });
           it('calls requesttimeline when this.event is undefined', function(){
+            myEl.$.requesttimeline.generateRequest = sinon.stub();            
             myEl.events = undefined
             myEl._language_response(event, detail);
-            sinon.assert.called(myEl.$.requesttimeline.generateRequest);
+            sinon.assert.calledOnce(myEl.$.requesttimeline.generateRequest);
           });
-
-/*          it('calls refresh??? ', function(){
+          it('calls _changeTime when this.event is already defined', function(){
+            myEl._changeTime = sinon.stub();
+            var events = [{event: "event"}, {event2: "event2"}];
+            myEl.events = events;
+            myEl._language_response(event, detail);
+            sinon.assert.calledWith(myEl._changeTime, events);
+          });
+          /*
+          it('should call refresh when the interval time is reached', function(){
+            myEl.$.refresh.generateRequest = sinon.mock();
             myEl.events = undefined
             myEl._language_response(event, detail);
             sinon.assert.called(myEl.$.refresh.generateRequest);
-          });*/
+          });
+*/
+        });
 
-          it('calls _changeTime when this.event is alredy defined', function(){
-            var el = fixture('fixture') ;
-            el._changeTime = sinon.mock();
-            el.events = [{event: "event"}, {event2: "event2"}];
-            el._language_response(event, detail);
-            sinon.assert.called(el._changeTime)
+        describe('_responsetimeline function', function(){
+          var posts = {
+            "pagination": {
+              "next_max_id": "1197643531216696520_9603532"
+            },
+            "data": [
+              {
+                "type": "image",
+                "created_time": "1457555445",
+                "link": "https://www.instagram.com/p/BCvun8MQrwz/",
+                "likes": {
+                  "count": 13383
+                },
+                "images": {
+                  "standard_resolution": {
+                    "url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12826261_143464196044688_769717988_n.jpg?ig_cache_key=MTIwMjM4NDY4MDM2MDUyNDg1MQ%3D%3D.2.l"
+                  }
+                },
+                "caption": {
+                  "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: g.co/ZoogleSelfies"
+                },
+                "user_has_liked": false,
+                "id": "1202384680360524851_1067259270",
+                "user": {
+                  "username": "google",
+                  "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg"
+                }
+              },
+              {
+                "videos": {
+                  "standard_resolution": {
+                    "url": "https://scontent.cdninstagram.com/t50.2886-16/10724338_1220992977928388_1428080107_n.mp4",
+                  }
+                },
+                "type": "video",
+                "created_time": "1457462873",
+                "link": "https://www.instagram.com/p/BCs-Ds0wr0B/",
+                "likes": {
+                  "count": 11839,
+                },
+                "caption": {
+                  "text": "You dream of being infographists, drummers, social workers, moon-explorers, mermaids and more. Keep sharing your #OneDayIWill dreams and we'll keep doodling them. 💫 g.co/IWD"
+                },
+                "user_has_liked": false,
+                "user": {
+                  "username": "google",
+                  "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg",
+                }
+              }
+            ]
+          };
+          var detail = {response: posts};
+          var language = {
+            "second" : "segundo",
+            "seconds" : "segundos",
+            "minute" : "minuto",
+            "minutes" : "minutos",
+            "hour" : "hora",
+            "hours" : "horas",
+            "days" : "días"
+          };
+          var event = {};
+
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._responsetimeline);
+          });
+          it('sets this.data properly', function(){
+            myEl._changeTime = sinon.stub();
+            myEl._responsetimeline(event, detail);
+            assert.equal(myEl.data, posts);
+          });
+          it('sets min_id properly', function(){
+            myEl._changeTime = sinon.stub();
+            myEl._responsetimeline(event, detail);
+            assert.equal(myEl.data.data[0].id, posts.data[0].id);
+          });
+          it('calls parser function',function(){
+            var el = fixture('fixture')
+            el._changeTime = sinon.stub();
+            var spy = sinon.spy(el, "set")
+            el._responsetimeline(event, detail);
+            sinon.assert.calledOnce(el.set)
+          });
+          it('calls _changeTime function', function(){
+            myEl._changeTime = sinon.mock();
+            myEl._responsetimeline(event, detail);
+            sinon.assert.calledOnce(myEl._changeTime)
+          });
+        });
+
+        describe('_getRequesttimelineParams function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            var espia = sinon.spy(myEl, '_getRequesttimelineParams')
+            assert.isDefined(espia)
+            espia.reset();
+          });
+          it('returns an object', function(){
+            var token = "12345";
+            var resp = myEl._getRequesttimelineParams(token);
+            assert.isObject(resp);
+          });
+          it('returns the access token', function(){
+            var token = "12345"
+            var resp = myEl._getRequesttimelineParams(token)
+            token = {access_token: '12345'}
+            assert.equal(resp.access_token, token.access_token)
+          });
+        });
+
+        describe('_getLoadMoreParams function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._getLoadMoreParams)
+          });
+          it('returns an object', function(){
+            var token = "12345"; var count = "20"; var max_id = "101";
+            var resp = myEl._getLoadMoreParams(token, count, max_id);
+            assert.isObject(resp);
+          });
+          it('returns the access token', function(){
+            var token = "12345"; var count = "20"; var max_id = "101";
+            var resp = myEl._getLoadMoreParams(token, count, max_id);
+            token = {access_token: '12345'};
+            count = {count: "20"};
+            max_id = {max_id: "101"}
+            assert.equal(resp.access_token, token.access_token);
+            assert.equal(resp.count, count.count);
+            assert.equal(resp.max_id, max_id.max_id);
+          });
+        });
+
+        describe('_getRefreshParams function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._getRefreshParams)
+          });
+          it('returns an object', function(){
+            var token = "12345"; var min_id = "101";
+            var resp = myEl._getRefreshParams(token, min_id);
+            assert.isObject(resp);
+          });
+          it('returns the access token', function(){
+            var token = "12345"; var min_id = "101";
+            var resp = myEl._getRefreshParams(token, min_id);
+            token = {access_token: '12345'};
+            min_id = {min_id: "101"}
+            assert.equal(resp.access_token, token.access_token);
+            assert.equal(resp.min_id, min_id.min_id);
+          });
+        });
+
+        describe('_getRequestLanguageUrl function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._getRequestLanguageUrl)
+          });
+          it('returns a string', function(){
+            var component_directory = "./"; var languageFile = "es_es.json";
+            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
+            assert.isString(resp);
+          });
+          it('returns language url properly', function(){
+            var component_directory = "./"; var languageFile = "es_es.json";
+            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
+            var check = component_directory + "language/" + languageFile;
+            assert.equal(resp, check);
+          });
+        });
+
+        describe('_getUser function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._getUser)
+          });
+          it('returns a string', function(){
+            var username = "JuanFryS";
+            var resp = myEl._getUser(username);
+            assert.isString(resp);
+          });
+          it('returns language url properly', function(){
+            var username = "JuanFryS";
+            var resp = myEl._getUser(username);
+            var check = "https://instagram.com/" + username;
+            assert.equal(resp, check);
+          });
+        });
+
+        describe('_isSameType function', function(){
+          before(function(){
+            myEl = fixture('fixture');
+          });
+
+          it('is defined', function(){
+            assert.isDefined(myEl._isSameType)
+          });
+          it('returns a boolean', function(){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'image');
+            assert.isBoolean(resp);
+          });
+          it('check the types properly', function(){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'image');
+            assert.isTrue(resp);
+          });
+          it('also identifies when types are not the same', function(){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'video');
+            assert.isFalse(resp);
           });
         });
       });
     </script>
-
   </body>
 </html>
