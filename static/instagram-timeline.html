@@ -430,8 +430,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _response_load: function(event, detail){
         this.data = detail.response
         if (this.data.data || this.data.data.length > 0) {
-          for(i = 0; i<this.data.data.length;i++){
-            this.push('events',this.data.data[i])
+          this.data.data = this.parser(this.data.data )
+          for(loop = 0; loop<this.data.data.length;loop++){
+            this.push("events", this.data.data[loop])
           }
         } else {
           this.thereAreModeData = false;
