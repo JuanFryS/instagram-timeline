@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 
@@ -99,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       width: 20px;
       padding: 4px;
       margin: 1px;
-    } 
+    }
     #liked[liked] {
       color:rgba(255,0,0,0.7);
     }
@@ -132,7 +132,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     #likeContainer {
       margin-left: 6px;
-      margin-right: 0px 
+      margin-right: 0px
     }
     #button{
       margin-left: auto;
@@ -356,7 +356,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _getRequestLanguageUrl: function(component_directory, languageFile) {
         return this.component_directory + "language/" + languageFile;
-      }, 
+      },
 
       _getUser: function(username) {
         return "https://instagram.com/" + username;
@@ -428,7 +428,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_load: function(event, detail){
-        this.data = detail.response
+        this.data = detail.response;
         if (this.data.data || this.data.data.length > 0) {
           this.data.data = this.parser(this.data.data )
           for(loop = 0; loop<this.data.data.length;loop++){
@@ -441,7 +441,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _changeTime: function(list){
-
         for (i=0;i<list.length;i++){
           list[i].time = list[i].created_time*1000
           var date = list[i].time;

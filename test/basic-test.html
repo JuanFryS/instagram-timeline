@@ -13,491 +13,513 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../static/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../static/bower_components/web-component-tester/browser.js"></script>
-    <script src="../static/bower_components/test-fixture/test-fixture-mocha.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../static/instagram-timeline.html">
-    <link rel="import" href="../bower_components/test-fixture/test-fixture.html">
 
   </head>
   <body>
 
     <!-- You can use the document as a place to set up your fixtures. -->
-    <test-fixture id="fixture">
+    <test-fixture id='timeline'>
       <template>
         <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}">
         </instagram-timeline>
       </template>
     </test-fixture>
-
     <script>
-      describe('instagram-timeline', function(){
-        var myEl;
-        before(function(){
-          myEl = fixture('fixture');
-        });
 
-        describe('ready function', function(){
-          before(function(){
-            myEl.$.requestLanguage.generateRequest = sinon.mock();
-          });
-          it('is defined', function(){
-            assert.isDefined(myEl.ready);
-          });
-          it('is called', function(){
-            myEl.ready();
-            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
-          });
-        });
-
-        describe('_getRequesttimelineParams function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            var espia = sinon.spy(myEl, '_getRequesttimelineParams')
-            assert.isDefined(espia)
-            espia.reset();
-          });
-          it('returns an object', function(){
-            var token = "12345";
-            var resp = myEl._getRequesttimelineParams(token);
-            assert.isObject(resp);
-          });
-          it('returns the access token', function(){
-            var token = "12345"
-            var resp = myEl._getRequesttimelineParams(token)
-            token = {access_token: '12345'}
-            assert.equal(resp.access_token, token.access_token)
-          });
-        });
-
-        describe('_getLoadMoreParams function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._getLoadMoreParams)
-          });
-          it('returns an object', function(){
-            var token = "12345"; var count = "20"; var max_id = "101";
-            var resp = myEl._getLoadMoreParams(token, count, max_id);
-            assert.isObject(resp);
-          });
-          it('returns the access token', function(){
-            var token = "12345"; var count = "20"; var max_id = "101";
-            var resp = myEl._getLoadMoreParams(token, count, max_id);
-            token = {access_token: '12345'};
-            count = {count: "20"};
-            max_id = {max_id: "101"}
-            assert.equal(resp.access_token, token.access_token);
-            assert.equal(resp.count, count.count);
-            assert.equal(resp.max_id, max_id.max_id);
-          });
-        });
-
-        describe('_getRefreshParams function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._getRefreshParams)
-          });
-          it('returns an object', function(){
-            var token = "12345"; var min_id = "101";
-            var resp = myEl._getRefreshParams(token, min_id);
-            assert.isObject(resp);
-          });
-          it('returns the access token', function(){
-            var token = "12345"; var min_id = "101";
-            var resp = myEl._getRefreshParams(token, min_id);
-            token = {access_token: '12345'};
-            min_id = {min_id: "101"}
-            assert.equal(resp.access_token, token.access_token);
-            assert.equal(resp.min_id, min_id.min_id);
-          });
-        });
-
-        describe('_getRequestLanguageUrl function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._getRequestLanguageUrl)
-          });
-          it('returns a string', function(){
-            var component_directory = "./"; var languageFile = "es_es.json";
-            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
-            assert.isString(resp);
-          });
-          it('returns language url properly', function(){
-            var component_directory = "./"; var languageFile = "es_es.json";
-            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
-            var check = component_directory + "language/" + languageFile;
-            assert.equal(resp, check);
-          });
-        });
-
-        describe('_getUser function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._getUser)
-          });
-          it('returns a string', function(){
-            var username = "JuanFryS";
-            var resp = myEl._getUser(username);
-            assert.isString(resp);
-          });
-          it('returns language url properly', function(){
-            var username = "JuanFryS";
-            var resp = myEl._getUser(username);
-            var check = "https://instagram.com/" + username;
-            assert.equal(resp, check);
-          });
-        });
-
-        describe('_isSameType function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._isSameType)
-          });
-          it('returns a boolean', function(){
-            var item = {type : 'image'};
-            var resp = myEl._isSameType(item.type, 'image');
-            assert.isBoolean(resp);
-          });
-          it('check the types properly', function(){
-            var item = {type : 'image'};
-            var resp = myEl._isSameType(item.type, 'image');
-            assert.isTrue(resp);
-          });
-          it('also identifies when types are not the same', function(){
-            var item = {type : 'image'};
-            var resp = myEl._isSameType(item.type, 'video');
-            assert.isFalse(resp);
-          });
-        });
-
-        describe('_isCaption function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-          });
-          it('is defined', function(){
-            assert.isDefined(myEl._isCaption);
-          });
-          it('returns a boolean', function(){
-            var caption = null;
-            var resp = myEl._isCaption(caption);
-            assert.isBoolean(resp);
-          });
-          it('returns true when the argument is null', function(){
-            var caption = null;
-            var resp = myEl._isCaption(caption);
-            assert.isTrue(resp);
-          })
-          it('also returns false when the argument is different of null', function(){
-            var caption = "something diffent to null";
-            var resp = myEl._isCaption(caption);
-            assert.isFalse(resp);
-          })
-        });
-
-        describe('_language_changed function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-            myEl.component_directory = false;
-          });
-          it('is defined', function(){
-            assert.isDefined(myEl._language_changed);
-          });
-          it('changes the "language" file', function(){
-            myEl.language = "";
-            var newVal = "en";
-            myEl._language_changed(newVal);
-            assert.equal(myEl.language, newVal);
-          });
-          it('changes the "languageFile" file', function(){
-            myEl.languageFile = "";
-            var newVal = "es";
-            myEl._language_changed(newVal);
-            assert.equal(myEl.languageFile, "es_es.json");
-          });
-          it('makes a request when component_directory is defined', function(){
-            myEl.$.requestLanguage.generateRequest = sinon.stub();
-            myEl.component_directory = "./";
-            myEl._language_changed("en")
-            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
-            sinon.restore()
-          });
-        });
-
-        describe('_responsetimeline function', function(){
-          var posts = {
-            "pagination": {
-              "next_max_id": "1197643531216696520_9603532"
-            },
-            "data": [
-              {
-                "type": "image",
-                "created_time": "1457555445",
-                "link": "https://www.instagram.com/p/BCvun8MQrwz/",
-                "likes": {
-                  "count": 13383
-                },
-                "images": {
-                  "standard_resolution": {
-                    "url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12826261_143464196044688_769717988_n.jpg?ig_cache_key=MTIwMjM4NDY4MDM2MDUyNDg1MQ%3D%3D.2.l"
-                  }
-                },
-                "caption": {
-                  "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: g.co/ZoogleSelfies"
-                },
-                "user_has_liked": false,
-                "id": "1202384680360524851_1067259270",
-                "user": {
-                  "username": "google",
-                  "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg"
-                }
-              },
-              {
-                "videos": {
-                  "standard_resolution": {
-                    "url": "https://scontent.cdninstagram.com/t50.2886-16/10724338_1220992977928388_1428080107_n.mp4",
-                  }
-                },
-                "type": "video",
-                "created_time": "1457462873",
-                "link": "https://www.instagram.com/p/BCs-Ds0wr0B/",
-                "likes": {
-                  "count": 11839,
-                },
-                "caption": {
-                  "text": "You dream of being infographists, drummers, social workers, moon-explorers, mermaids and more. Keep sharing your #OneDayIWill dreams and we'll keep doodling them. 💫 g.co/IWD"
-                },
-                "user_has_liked": false,
-                "user": {
-                  "username": "google",
-                  "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg",
-                }
-              }
-            ]
-          };
-          var detail = {response: posts};
-          var language = {
-            "second" : "segundo",
-            "seconds" : "segundos",
-            "minute" : "minuto",
-            "minutes" : "minutos",
-            "hour" : "hora",
-            "hours" : "horas",
-            "days" : "días"
-          };
-          var event = {};
-
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function(){
-            assert.isDefined(myEl._responsetimeline);
-          });
-          it('sets this.data properly', function(){
-            myEl._changeTime = sinon.stub();
-            myEl._responsetimeline(event, detail);
-            assert.equal(myEl.data, posts);
-            sinon.restore()
-          });
-          it('sets min_id properly', function(){
-            myEl._changeTime = sinon.stub();
-            myEl._responsetimeline(event, detail);
-            assert.equal(myEl.data.data[0].id, posts.data[0].id);
-            sinon.restore()
-          });
-          it('calls parser function',function(){
-            var el = fixture('fixture')
-            el._changeTime = sinon.stub();
-            var spy = sinon.spy(el, "set")
-            el._responsetimeline(event, detail);
-            sinon.assert.calledOnce(el.set)
-            sinon.restore()
-          });
-          it('calls _changeTime function', function(){
-            myEl._changeTime = sinon.mock();
-            myEl._responsetimeline(event, detail);
-            sinon.assert.calledOnce(myEl._changeTime)
-            sinon.restore()
-          });
-        });
-
-        describe('_language_response function'  , function(){
-          var language = {
-            "refresh" : "Refrescar",
-            "video" : "El video no puede ser reproducido",
-            "load_more" :  "Mostrar más",
-            "second" : "segundo",
-            "seconds" : "segundos",
-            "minute" : "minuto",
-            "minutes" : "minutos",
-            "hour" : "hora",
-            "hours" : "horas",
-            "days" : "días",
-            "like" : " Me gusta"
-          };
-          var detail = {response: language};
-          var event = {};
-
-          before(function(){
-            myEl = fixture('fixture');
-          });
-
-          it('is defined', function() {
-            assert.isDefined(myEl._language_response);
-          });
-
-          /* 
+      /*
             ** Ejemplo de spy **
             var languageResponse = sinon.spy(myEl, '_language_response');
             myEl._language_response(event, detail);
             sinon.assert.calledOnce(languageResponse);
             languageResponse.reset();
             */
-          it('sets language_data properly', function(){
+
+      describe('timeline component', function(){
+        var posts = {
+          "pagination": {
+            "next_max_id": "1197643531216696520_9603532"
+          },
+          "data": [
+            {
+              "type": "image",
+              "created_time": "1457555445",
+              "link": "https://www.instagram.com/p/BCvun8MQrwz/",
+              "likes": {
+                "count": 13383
+              },
+              "images": {
+                "standard_resolution": {
+                  "url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12826261_143464196044688_769717988_n.jpg?ig_cache_key=MTIwMjM4NDY4MDM2MDUyNDg1MQ%3D%3D.2.l"
+                }
+              },
+              "caption": {
+                "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: g.co/ZoogleSelfies"
+              },
+              "user_has_liked": false,
+              "id": "1202384680360524851_1067259270",
+              "user": {
+                "username": "google",
+                "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg"
+              }
+            },
+            {
+              "videos": {
+                "standard_resolution": {
+                  "url": "https://scontent.cdninstagram.com/t50.2886-16/10724338_1220992977928388_1428080107_n.mp4",
+                }
+              },
+              "type": "video",
+              "created_time": "1457462873",
+              "link": "https://www.instagram.com/p/BCs-Ds0wr0B/",
+              "likes": {
+                "count": 11839,
+              },
+              "caption": {
+                "text": "You dream of being infographists, drummers, social workers, moon-explorers, mermaids and more. Keep sharing your #OneDayIWill dreams and we'll keep doodling them. 💫 g.co/IWD"
+              },
+              "user_has_liked": false,
+              "user": {
+                "username": "google",
+                "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg",
+              }
+            }
+          ]
+        };
+        var detail = {response: posts};
+        var language = {
+          "second" : "segundo",
+          "seconds" : "segundos",
+          "minute" : "minuto",
+          "minutes" : "minutos",
+          "hour" : "hora",
+          "hours" : "horas",
+          "days" : "dias"
+        };
+
+        beforeEach(function(){
+          myEl.$.requesttimeline.generateRequest = sinon.stub();
+          myEl.$.load_more.generateRequest = sinon.stub();
+          myEl.$.refresh.generateRequest = sinon.stub();
+          myEl.$.requestLanguage.generateRequest = sinon.stub();
+          myEl.language_data = language;
+        });
+        afterEach(function(){
+          sinon.restore();
+        });
+
+        describe('ready function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          after(function(){
+            sinon.restore();
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl.ready);
+            done();
+          });
+          it('is called', function(done){
+            myEl.ready();
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
+            done();
+          });
+        });
+
+        describe('_getRequesttimelineParams function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getRequesttimelineParams);
+            done();
+          });
+          it('returns an object', function(done){
+            var token = "12345";
+            var resp = myEl._getRequesttimelineParams(token);
+            assert.isObject(resp);
+            done();
+          });
+          it('returns the access token', function(done){
+            var token = "12345";
+            var resp = myEl._getRequesttimelineParams(token);
+            token = {access_token: '12345'};
+            assert.equal(resp.access_token, token.access_token);
+            done();
+          });
+        });
+
+        describe('_getLoadMoreParams function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getLoadMoreParams);
+            done();
+          });
+          it('returns an object', function(){
+            var token = "12345"; var count = "20"; var max_id = "101";
+            var resp = myEl._getLoadMoreParams(token, count, max_id);
+            assert.isObject(resp);
+          });
+          it('returns the access token', function(done){
+            var token = "12345"; var count = "20"; var max_id = "101";
+            var resp = myEl._getLoadMoreParams(token, count, max_id);
+            token = {access_token: '12345'};
+            count = {count: "20"};
+            max_id = {max_id: "101"};
+            assert.equal(resp.access_token, token.access_token);
+            assert.equal(resp.count, count.count);
+            assert.equal(resp.max_id, max_id.max_id);
+            done();
+          });
+        });
+
+        describe('_getRefreshParams function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getRefreshParams);
+            done();
+          });
+          it('returns an object', function(done){
+            var token = "12345"; var min_id = "101";
+            var resp = myEl._getRefreshParams(token, min_id);
+            assert.isObject(resp);
+            done();
+          });
+          it('returns the access token', function(done){
+            var token = "12345"; var min_id = "101";
+            var resp = myEl._getRefreshParams(token, min_id);
+            token = {access_token: '12345'};
+            min_id = {min_id: "101"}
+            assert.equal(resp.access_token, token.access_token);
+            assert.equal(resp.min_id, min_id.min_id);
+            done();
+          });
+        });
+
+        describe('_getRequestLanguageUrl function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getRequestLanguageUrl);
+            done();
+          });
+          it('returns a string', function(done){
+            var component_directory = "./"; var languageFile = "es_es.json";
+            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
+            assert.isString(resp);
+            done();
+          });
+          it('returns language url properly', function(done){
+            var component_directory = "./"; var languageFile = "es_es.json";
+            var resp = myEl._getRequestLanguageUrl(component_directory, languageFile);
+            var check = component_directory + "language/" + languageFile;
+            assert.equal(resp, check);
+            done();
+          });
+        });
+
+        describe('_getUser function', function(){
+          var username = "JuanFryS";
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getUser);
+            done();
+          });
+          it('returns a string', function(done){
+            var resp = myEl._getUser(username);
+            assert.isString(resp);
+            done();
+          });
+          it('returns language url properly', function(done){
+            var resp = myEl._getUser(username);
+            var check = "https://instagram.com/" + username;
+            assert.equal(resp, check);
+            done();
+          });
+        });
+
+        describe('_isSameType function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+
+          after(function(){
+            sinon.restore();
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._isSameType);
+            done();
+          });
+          it('returns a boolean', function(done){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'image');
+            assert.isBoolean(resp);
+            done();
+          });
+          it('check the types properly', function(done){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'image');
+            assert.isTrue(resp);
+            done();
+          });
+          it('also identifies when types are not the same', function(done){
+            var item = {type : 'image'};
+            var resp = myEl._isSameType(item.type, 'video');
+            assert.isFalse(resp);
+            done();
+          });
+        });
+
+        describe('_isCaption function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._isCaption);
+            done();
+          });
+          it('returns a boolean', function(done){
+            var caption = null;
+            var resp = myEl._isCaption(caption);
+            assert.isBoolean(resp);
+            done();
+          });
+          it('returns true when the argument is null', function(done){
+            var caption = null;
+            var resp = myEl._isCaption(caption);
+            assert.isTrue(resp);
+            done();
+          })
+          it('also returns false when the argument is different of null', function(done){
+            var caption = "something diffent to null";
+            var resp = myEl._isCaption(caption);
+            assert.isFalse(resp);
+            done();
+          })
+        });
+
+        describe('_language_changed function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+            myEl.component_directory = "";
+          });
+          after(function(){
+            sinon.restore();
+          })
+          it('is defined', function(done){
+            assert.isDefined(myEl._language_changed);
+            done();
+          });
+          it('changes the "language" file', function(done){
+            myEl.language = "";
+            var newVal = "en";
+            var oldVal = "es";
+            myEl._language_changed(newVal, oldVal);
+            assert.equal(myEl.language, newVal);
+            done();
+          });
+          it('changes the "languageFile" file', function(done){
+            myEl.languageFile = "";
+            var newVal = "es";
+            var oldVal = "en";
+            myEl._language_changed(newVal, oldVal);
+            assert.equal(myEl.languageFile, "es_es.json");
+            done();
+          });
+          it('makes a request when component_directory is defined', function(done){
+            myEl.component_directory = "./";
+            var newVal = "es";
+            var oldVal = "en";
+            myEl._language_changed(newVal, oldVal);
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
+            done();
+          });
+        });
+
+        describe('_responsetimeline function', function(){
+          var event = {};
+          before(function(){
+            myEl = fixture('timeline');
+            myEl._changeTime = sinon.stub();
+          });
+          after(function(){
+            sinon.restore();
+          })
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._responsetimeline);
+            done();
+          });
+          it('sets this.data properly', function(done){
+            myEl._responsetimeline(event, detail);
+            assert.equal(myEl.data, posts);
+            done();
+          });
+          it('sets min_id properly', function(done){
+            myEl._responsetimeline(event, detail);
+            assert.equal(myEl.data.data[0].id, posts.data[0].id);
+            done();
+          });
+          it('calls parser function',function(done){
+            var spy = sinon.spy(myEl, "set");
+            myEl._responsetimeline(event, detail);
+            sinon.assert.calledOnce(myEl.set);
+            done();
+          });
+          it('calls _changeTime function', function(done){
+            myEl._responsetimeline(event, detail);
+            sinon.assert.called(myEl._changeTime);
+            done();
+          });
+        });
+
+        describe('_language_response function'  , function(){
+          var detail = {response: language};
+          var event = {};
+
+          before(function(){
+            myEl = fixture('timeline');
+            myEl._changeTime = sinon.stub();
+          });
+          after(function(){
+            sinon.restore();
+          })
+          it('is defined', function(done) {
+            assert.isDefined(myEl._language_response);
+            done();
+          });
+          it('sets language_data properly', function(done){
             myEl.language_data = {};
             myEl._language_response(event, detail);
-            assert.equal(language, myEl.language_data)
+            assert.equal(language, myEl.language_data);
+            done();
           });
-          it('calls requesttimeline when this.event is undefined', function(){
-            myEl.$.requesttimeline.generateRequest = sinon.stub();            
-            myEl.events = undefined
+          it('calls requesttimeline when this.event is undefined', function(done){
+            myEl.events = undefined;
             myEl._language_response(event, detail);
             sinon.assert.called(myEl.$.requesttimeline.generateRequest);
-            sinon.restore()
+            done();
           });
-          it('calls _changeTime when this.event is already defined', function(){
-            myEl._changeTime = sinon.stub();
+          it('calls _changeTime when this.event is already defined', function(done){
             var events = [{event: "event"}, {event2: "event2"}];
             myEl.events = events;
             myEl._language_response(event, detail);
             sinon.assert.calledWith(myEl._changeTime, events);
-            sinon.restore()
+            done();
           });
-          /*
-          it('should call refresh when the interval time is reached', function(){
-            myEl.$.refresh.generateRequest = sinon.mock();
-            myEl.events = undefined
-            myEl._language_response(event, detail);
-            sinon.assert.called(myEl.$.refresh.generateRequest);
-          });
-*/
+
+          /*it('should call refresh when the interval time is reached', function(){
+    myEl.$.refresh.generateRequest = sinon.mock();
+    myEl.events = undefined
+    myEl._language_response(event, detail);
+    sinon.assert.called(myEl.$.refresh.generateRequest);
+  });*/
+
         });
 
         describe('refresh_func function', function(){
           before(function(){
-            myEl = fixture('fixture');
+            myEl = fixture('timeline');
           });
-          it('is defined', function(){
-            assert.isDefined(myEl.refresh_func)
+          after(function(){
+            sinon.restore();
           });
-          it('makes a request',function(){
-            myEl.$.refresh.generateRequest = sinon.stub();
+          it('is defined', function(done){
+            assert.isDefined(myEl.refresh_func);
+            done();
+          });
+          it('makes a request',function(done){
             myEl.refresh_func();
             sinon.assert.called(myEl.$.refresh.generateRequest);
-            sinon.restore()
-          })
+            done();
+          });
         });
 
+        /* _response_refresh */
+
         describe('load function', function(){
+
           before(function(){
-            myEl = fixture('fixture');
+            myEl = fixture('timeline');
           });
-          it('is defined', function(){
+          after(function(){
+            sinon.restore();
+          });
+          it('is defined', function(done){
             assert.isDefined(myEl.load)
+            done();
           });
-          it('takes the max_id property properly', function(){
+          it('takes the max_id property properly', function(done){
             var data = {"pagination": {"next_max_id": "1197643531216696520_9603532"}};
             myEl.data = data;
             myEl.max_id = "";
             myEl.load();
             assert.equal(myEl.max_id, data.pagination.next_max_id);
+            done();
           });
-          it('makes a request', function(){
-            myEl.$.load_more.generateRequest = sinon.stub();
+          it('makes a request', function(done){
+            var data = {"pagination": {"next_max_id": "1197643531216696520_9603532"}};
+            myEl.data = data;
+            myEl.max_id = "";
             myEl.load();
             sinon.assert.called(myEl.$.load_more.generateRequest);
-            sinon.restore()
+            done();
           });
         });
 
-        describe('_response_load function', function(){
-          before(function(){
-            myEl = fixture('fixture');
-            myEl._changeTime = sinon.stub()
+/*        describe('_response_load function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+            myEl._changeTime = sinon.stub();
+            myEl.parser = sinon.stub();
           });
-          after(function(){
+          afterEach(function(){
             sinon.restore();
           })
-          it('is defined', function(){
+
+          it('is defined', function(done){
             assert.isDefined(myEl._response_load)
+            done();
           });
-          it('sets the data attribute with the posts', function(){
+          it('sets the data attribute with the posts', function(done){
             var event = "";
-            var posts = {"data":
-                         {
-                           "type": "image",
-                           "created_time": "1457555445",
-                           "link": "https://www.instagram.com/p/BCvun8MQrwz/",
-                           "likes": {
-                             "count": 13383
-                           },
-                           "images": {
-                             "standard_resolution": {
-                               "url": "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12826261_143464196044688_769717988_n.jpg?ig_cache_key=MTIwMjM4NDY4MDM2MDUyNDg1MQ%3D%3D.2.l"
-                             }
-                           },
-                           "caption": {
-                             "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: g.co/ZoogleSelfies"
-                           },
-                           "user_has_liked": false,
-                           "id": "1202384680360524851_1067259270",
-                           "user": {
-                             "username": "google",
-                             "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg"
-                           }
-                         }
-                        };
+            console.log(posts)
             var detail = {response: posts}
             myEl._response_load(event, detail);
-            assert.equal(myEl.data, posts)
+            assert.equal(myEl.data, posts);
+            done();
           });
-          /*
-          * Test del if/else
-          */
-          it('calls "_changeTime" function', function(){
+          Test del if/else
+          it('calls "_changeTime" function', function(done){
+            var event = "";
+            var detail = {response: posts}
+            myEl._response_load(event, detail);
             sinon.assert.called(myEl._changeTime)
+            done();
           });
-        });
-
-        describe('_changeTime function', function(){
-
-        });
-
-        describe('parser function', function(){
-
-        });
+        });*/
 
       });
+
     </script>
   </body>
 </html>
