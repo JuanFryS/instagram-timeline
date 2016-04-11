@@ -13,9 +13,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../bower_components/web-component-tester/browser.js"></script>
-    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+    <script src="../static/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../static/bower_components/web-component-tester/browser.js"></script>
+    <script src="../static/bower_components/test-fixture/test-fixture-mocha.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../static/instagram-timeline.html">
@@ -33,7 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
 
       /*
-            ** Ejemplo de spy **
+
+      STUB -> Cambia el comportamiento de la funcion por el que se defina:
+            myEl.XXX = sinon.stub() : función vacía que no hace  nada
+            myEl.XXX = sinon.stub().returns("Lo que sea") : la funcion hace lo que está definido dentro del 'returns'.
+      ESPÍA -> Observa la función en cuestión, se ejecuta la función original.
             var languageResponse = sinon.spy(myEl, '_language_response');
             myEl._language_response(event, detail);
             sinon.assert.calledOnce(languageResponse);
@@ -59,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
               },
               "caption": {
-                "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: g.co/ZoogleSelfies"
+                "text": "Animal selfies are here! 🐘📷 See all of #GooglePhotos' snaps from @thelosangeleszoo: http://google.es"
               },
               "user_has_liked": false,
               "id": "1202384680360524851_1067259270",
@@ -88,10 +92,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 "username": "google",
                 "profile_picture": "https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716453_573162706193243_1780513304_a.jpg",
               }
+            },
+            {
+              "created_time": "1457463962",
+              "caption": {
+                "text": "Hola @JuanFryS http://www.google.es #Prueba",
+              }
             }
           ]
         };
-        var detail = {response: posts};
         var language = {
           "second" : "segundo",
           "seconds" : "segundos",
@@ -101,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           "hours" : "horas",
           "days" : "dias"
         };
-
+        var detail = {response: posts};
         beforeEach(function(){
           myEl.$.requesttimeline.generateRequest = sinon.stub();
           myEl.$.load_more.generateRequest = sinon.stub();
@@ -338,11 +347,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           });
           it('changes the "languageFile" file', function(done){
-            myEl.languageFile = "";
+            myEl.language = "";
             var newVal = "es";
             var oldVal = "en";
             myEl._language_changed(newVal, oldVal);
-            assert.equal(myEl.languageFile, "es_es.json");
+            assert.equal(myEl.language, newVal);
             done();
           });
           it('makes a request when component_directory is defined', function(done){
@@ -355,11 +364,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
+        /* Revisar estos test */
+
         describe('_responsetimeline function', function(){
           var event = {};
           before(function(){
             myEl = fixture('timeline');
             myEl._changeTime = sinon.stub();
+            myEl.parser = sinon.stub();
           });
           after(function(){
             sinon.restore();
@@ -380,9 +392,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           });
           it('calls parser function',function(done){
-            var spy = sinon.spy(myEl, "set");
             myEl._responsetimeline(event, detail);
-            sinon.assert.calledOnce(myEl.set);
+            sinon.assert.called(myEl.parser);
             done();
           });
           it('calls _changeTime function', function(done){
@@ -407,12 +418,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isDefined(myEl._language_response);
             done();
           });
-          it('sets language_data properly', function(done){
+          /*it('sets language_data properly', function(done){
             myEl.language_data = {};
             myEl._language_response(event, detail);
             assert.equal(language, myEl.language_data);
             done();
-          });
+          });*/
           it('calls requesttimeline when this.event is undefined', function(done){
             myEl.events = undefined;
             myEl._language_response(event, detail);
@@ -428,11 +439,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           /*it('should call refresh when the interval time is reached', function(){
-    myEl.$.refresh.generateRequest = sinon.mock();
-    myEl.events = undefined
-    myEl._language_response(event, detail);
-    sinon.assert.called(myEl.$.refresh.generateRequest);
-  });*/
+            myEl.$.refresh.generateRequest = sinon.mock();
+            myEl.events = undefined
+            myEl._language_response(event, detail);
+            sinon.assert.called(myEl.$.refresh.generateRequest);
+          });*/
 
         });
 
@@ -454,7 +465,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
-        /* _response_refresh */
+        describe('_response_refresh function', function(){
+          var event = "";
+          beforeEach(function(){
+            myEl = fixture('timeline');
+            myEl._changeTime = sinon.stub();
+            myEl.unshift = sinon.stub();
+            myEl.parser = sinon.stub().returns(detail.response.data);
+          });
+          afterEach(function(){
+            sinon.restore();
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._response_refresh);
+            done();
+          });
+          /*          it('sets the newData attribute with the posts', function(done){
+            var detail = {response: posts};
+            myEl._response_refresh(event, detail);
+            assert.equal(myEl.newData, detail.response.data)
+            done();
+          });*/
+          /* describe('when newData has new elements', function(){*/
+          it('takes the min_id property properly when newData has new elements', function(done){
+            var detail = {response: posts};
+            myEl.min_id = "";
+            myEl._response_refresh(event, detail);
+            assert.equal(myEl.min_id, detail.response.data[0].id);
+            done();
+          });
+          /*it('calls parser function', function(done){
+              var detail = {response: posts};
+              myEl._response_refresh(event, detail);
+              sinon.assert.called(myEl.parser);
+              done();
+            });
+            it('calls unshift function', function(done){
+              var detail = {response: posts};
+              myEl._response_refresh(event, detail);
+              sinon.assert.called(myEl.unshift);
+              done();
+            });
+          });*/
+          it('does not do anything when there are not new elements', function(done){
+            var detail = {response: {"data": {}}};
+            myEl.min_id = "";
+            myEl._response_refresh(event, detail);
+            assert.equal(myEl.min_id, "");
+            done();
+          });
+          it('calls "_changeTime" function always', function(done){
+            var detail = {response: {"data": {}}};
+            myEl._response_refresh(event, detail);
+            sinon.assert.called(myEl._changeTime);
+            done();
+          });
+        });
 
         describe('load function', function(){
 
@@ -468,14 +534,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isDefined(myEl.load)
             done();
           });
-          it('takes the max_id property properly', function(done){
+          /*it('takes the max_id property properly', function(done){
             var data = {"pagination": {"next_max_id": "1197643531216696520_9603532"}};
             myEl.data = data;
             myEl.max_id = "";
             myEl.load();
             assert.equal(myEl.max_id, data.pagination.next_max_id);
             done();
-          });
+          });*/
           it('makes a request', function(done){
             var data = {"pagination": {"next_max_id": "1197643531216696520_9603532"}};
             myEl.data = data;
@@ -486,38 +552,170 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
-/*        describe('_response_load function', function(){
+        describe('_response_load function', function(){
+          var event = "";
           beforeEach(function(){
             myEl = fixture('timeline');
             myEl._changeTime = sinon.stub();
-            myEl.parser = sinon.stub();
+            myEl.parser = sinon.stub().returns(detail.response.data);
+            myEl.events = [];
           });
           afterEach(function(){
             sinon.restore();
-          })
-
+          });
           it('is defined', function(done){
             assert.isDefined(myEl._response_load)
             done();
           });
-          it('sets the data attribute with the posts', function(done){
-            var event = "";
-            console.log(posts)
-            var detail = {response: posts}
+          /*it('sets the data attribute with the posts', function(done){
+            var detail = {response: posts};
             myEl._response_load(event, detail);
-            assert.equal(myEl.data, posts);
+            assert.equal(myEl.data, posts.data);
+            done();
+          });*/
+          it('goes into the if, so it calls parser function', function(done){
+            var detail = {response: posts};
+            myEl._response_load(event, detail);
+            sinon.assert.called(myEl.parser);
             done();
           });
-          Test del if/else
+          it('goes for the else, so it sets  the "thereAreModeData" attribute to false', function(done){
+            var detail = {response: {data: {}}};
+            myEl.thereAreModeData = true;
+            myEl._response_load(event, detail);
+            assert.isFalse(myEl.thereAreModeData);
+            done();
+          });
           it('calls "_changeTime" function', function(done){
-            var event = "";
-            var detail = {response: posts}
+            var detail = {response: posts};
             myEl._response_load(event, detail);
             sinon.assert.called(myEl._changeTime)
             done();
           });
-        });*/
+        });
 
+        /* Revisar estos test */
+        
+        describe('_changeTime function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._changeTime);
+            done();
+          });
+          it('does something', function(done){
+            myEl.language_data = language;
+            var lista = detail.response.data;
+            myEl._changeTime(lista);
+            done();
+          });
+        });
+
+        describe('parseURL function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseURL);
+            done();
+          });
+          it('parses the url', function(done){
+            tweet = detail.response.data[2].caption.text;
+            tweetParsed = 'Hola @JuanFryS <a href=http://www.google.es target="_blank">http://www.google.es</a> #Prueba'
+            var result = myEl.parseURL(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parseUsername function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseUsername);
+            done();
+          });
+          it('parses the username', function(done){
+            tweet = detail.response.data[2].caption.text;
+            tweetParsed = 'Hola <a href="https://instagram.com/JuanFryS "target="_blank">@JuanFryS</a> http://www.google.es #Prueba'
+            var result = myEl.parseUsername(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parseHashtag function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseHashtag);
+            done();
+          });
+          it('parses the hashtag', function(done){
+            tweet = detail.response.data[2].caption.text;
+            tweetParsed = 'Hola @JuanFryS http://www.google.es <a href="https://instagram.com/explore/tags/Prueba "target="_blank">#Prueba</a>'
+            var result = myEl.parseHashtag(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parser function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+            myEl.parseURL = sinon.stub();
+            myEl.parseUsername = sinon.stub();
+            myEl.parseHashtag = sinon.stub();
+          });
+          afterEach(function(){
+            sinon.restore();
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parser);
+            done();
+          });
+          it("does not do anything when the parameter's length is zero", function(done){
+            var lista = [];
+            myEl.parser(lista);
+            sinon.assert.notCalled(myEl.parseURL);
+            done();
+          });
+          it('does not do anything when the parameter does not have a caption field', function(done){
+            var lista = [{"type": "image"}];
+            myEl.parser(lista);
+            sinon.assert.notCalled(myEl.parseURL);
+            done();
+          });
+          it('calls differents parsers when the list is passed properly', function(done){
+            var lista = detail.response.data;
+            myEl.parser(lista);
+            sinon.assert.called(myEl.parseURL);
+            done();
+          });
+          /*it('also calls parseUsername when the list is passed properly', function(done){
+            var lista = detail.response.data;
+            myEl.parser(lista);
+            sinon.assert.called(myEl.parseUsername);
+            done();
+          });
+          it('calls parseHashtag when the list is passed properly', function(done){
+            var lista = detail.response.data;
+            myEl.parser(lista);
+            sinon.assert.called(myEl.parseHashtag);
+            done();
+          });*/
+          it('returns the list after be parsed', function(done){
+            var lista = detail.response.data;
+            var result = myEl.parser(lista);
+            assert.equal(lista, result);
+            done();
+          });
+
+        });
       });
 
     </script>

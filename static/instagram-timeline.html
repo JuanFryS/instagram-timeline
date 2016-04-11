@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 
@@ -335,13 +335,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true
         }
       },
+
       ready: function() {
         this.$.requestLanguage.generateRequest();
       },
 
-      /*
-       * Computed Functions and complex url
-       */
       _getRequesttimelineParams: function(accessToken) {
         return {access_token: accessToken};
       },
@@ -411,11 +409,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_refresh: function(event, detail){
-        var newData = detail.response.data;
-        if(newData.length > 0){
-          this.min_id = newData[0].id
-          for(i = newData.length-1; i>-1;i--){
-            this.unshift('events', newData[i]);
+        this.newData = detail.response.data;
+        if(this.newData.length > 0){
+          this.min_id = this.newData[0].id
+          this.newData = this.parser(this.newData);
+          for(i = this.newData.length-1; i>-1;i--){
+            this.unshift('events', this.newData[i]);
           }
         }
         this._changeTime(this.events);
@@ -428,11 +427,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _response_load: function(event, detail){
-        this.data = detail.response;
-        if (this.data.data || this.data.data.length > 0) {
-          this.data.data = this.parser(this.data.data )
-          for(loop = 0; loop<this.data.data.length;loop++){
-            this.push("events", this.data.data[loop])
+        this.data = detail.response.data;
+        if (this.data.length > 0) {
+          this.data = this.parser(this.data)
+          for(loop = 0; loop<this.data.length;loop++){
+            this.push("events", this.data[loop])
           }
         } else {
           this.thereAreModeData = false;
