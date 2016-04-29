@@ -32,18 +32,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
     <script>
 
-      /*
-
-      STUB -> Cambia el comportamiento de la funcion por el que se defina:
-            myEl.XXX = sinon.stub() : función vacía que no hace  nada
-            myEl.XXX = sinon.stub().returns("Lo que sea") : la funcion hace lo que está definido dentro del 'returns'.
-      ESPÍA -> Observa la función en cuestión, se ejecuta la función original.
-            var languageResponse = sinon.spy(myEl, '_language_response');
-            myEl._language_response(event, detail);
-            sinon.assert.calledOnce(languageResponse);
-            languageResponse.reset();
-            */
-
       describe('timeline component', function(){
         var posts = {
           "pagination": {
@@ -594,8 +582,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
-        /* Revisar estos test */
-        
         describe('_changeTime function', function(){
           beforeEach(function(){
             myEl = fixture('timeline');
@@ -607,8 +593,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           it('does something', function(done){
             myEl.language_data = language;
+            var spy = sinon.spy(myEl, 'set');
             var lista = detail.response.data;
             myEl._changeTime(lista);
+            sinon.assert.called(spy);
             done();
           });
         });
