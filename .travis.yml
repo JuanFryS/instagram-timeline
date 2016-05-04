@@ -2,7 +2,8 @@ language: node_js
 node_js: stable
 dist: trusty
 sudo: required
-addons:  
+addons:
+  firefox: latest
   apt:
     sources:
     - google-chrome
