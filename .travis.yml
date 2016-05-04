@@ -10,7 +10,6 @@ addons:
     packages:
     - google-chrome-stable
 before_script:
-- npm install -g bower polylint web-component-tester
+- npm install -g bower web-component-tester
 - bower install
-- polylint --bowerdir static/bower_components --input static/instagram-timeline.html
 script: xvfb-run wct
