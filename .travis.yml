@@ -12,5 +12,5 @@ addons:
 before_script:
 - npm install -g bower polylint web-component-tester
 - bower install
-- polylint -i static/instagram-timeline.html
+- polylint --bowerdir static/bower_components --input static/instagram-timeline.html
 script: xvfb-run wct
