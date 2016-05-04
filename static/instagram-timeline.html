@@ -303,8 +303,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         max_id: String,
         min_id: String,
-        languageFile: String,
-        language_data: String,
+        languageFile: {
+          type: Array,
+          value: []
+        },
+        language_data: {
+          type: Array,
+          value: []
+        },
         events: String,
         requesttimelineParams: {
           type: String,
