@@ -1,4 +1,4 @@
-# instagram-timeline
+# instagram-timeline [![Build Status](https://travis-ci.org/JuanFryS/instagram-timeline.svg?branch=master)](https://travis-ci.org/JuanFryS/instagram-timeline)
 
 It is a [Polymer](https://www.polymer-project.org/1.0/) component for obtain the timeline of the social network Instagram using Polymer
 
