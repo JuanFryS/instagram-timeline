@@ -15,7 +15,8 @@ class instagramRequest(webapp2.RequestHandler):
 #    media_id = self.request.get("media_id", default_value="")
 
 #    print(media_id)
-    peticion = "https://api.instagram.com/v1/users/self/feed?access_token="+access_token
+    peticion = "https://api.instagram.com/v1/users/self/media/recent/?access_token="+access_token
+#  peticion = "https://api.instagram.com/v1/users/self/feed?access_token="+access_token
 
     #Peticion basica
     if (count == "" and min_id == "" and max_id == ""):

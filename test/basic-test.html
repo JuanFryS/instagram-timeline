@@ -242,7 +242,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isString(resp);
             done();
           });*/
-          it('returns language url properly', function(done){
+          it('returns user url properly', function(done){
             var resp = myEl._getUser(username);
             var check = "https://instagram.com/" + username;
             assert.equal(resp, check);
